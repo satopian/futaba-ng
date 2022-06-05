@@ -13,6 +13,9 @@ function foot(&$dat){
 - <a href="http://php.s3.to" target=_top>GazouBBS</a> + <a href="http://www.2chan.net/" target=_top>futaba</a>-
 </small>
 </center>
+<script>
+ l(); //LoadCookie
+</script>
 </body></html>';
 }
 ?>

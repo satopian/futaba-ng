@@ -8,12 +8,7 @@
 function CleanStr($message){
   global $admin;
   $trimed_message = trim($message);//先頭と末尾の空白除去
-  if (get_magic_quotes_gpc()) {//¥を削除
-    $strip_slashed_message = stripslashes($trimed_message);
-  }
-  else{
-    $strip_slashed_message = $trimed_message;
-  }
+  $strip_slashed_message = $trimed_message;
 
   if($admin != ADMIN_PASS){//管理者はタグ可能
     $trimed_tag_message = htmlspecialchars($strip_slashed_message);//タグっ禁止

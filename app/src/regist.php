@@ -329,27 +329,10 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   fclose($fp);
 
   //クッキー保存
-  setcookie ("pwdc", $c_pass,time()+7*24*3600);  /* 1週間で期限切れ */
-  if(function_exists("mb_internal_encoding")&&function_exists("mb_convert_encoding")
-      &&function_exists("mb_substr")){
-    if(preg_match("/MSIE|Opera/",$_SERVER["HTTP_USER_AGENT"]) === 1){
-      $i=0;$c_name='';
-      mb_internal_encoding("UTF-8");
-      while($j=mb_substr($names,$i,1)){
-        $j = mb_convert_encoding($j, "UTF-16", "UTF-8");
-        $c_name.="%u".bin2hex($j);
-        $i++;
-      }
-      header(
-        "Set-Cookie: namec=$c_name; expires=".gmdate("D, d-M-Y H:i:s",time()+7*24*3600)." GMT",false
-      );
-    }
-    else{
-      $c_name=$names;
-      setcookie ("namec", $c_name,time()+7*24*3600);  /* 1週間で期限切れ */
-    }
-  }
-
+  setcookie ("pwdc", $c_pass,time()+7*24* 3600);  /* 1週間で期限切れ */
+  $c_name=$names;
+  setcookie ("namec", $c_name,time()+7*24*3600);  /* 1週間で期限切れ */
+ 
   if($dest&&file_exists($dest)){
     rename($dest,$path.$tim.$extension);
     if(USE_THUMB){thumb($path,$tim,$extension);}

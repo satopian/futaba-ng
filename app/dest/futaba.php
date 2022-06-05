@@ -13,11 +13,11 @@ define("IMG_DIR", 'src/');		//画像保存ディレクトリ。futaba.phpから�
 define("THUMB_DIR",'thumb/');		//サムネイル保存ディレクトリ
 define("TITLE", '画像掲示板');		//タイトル（<title>とTOP）
 define("HOME",  '../');			//「ホーム」へのリンク
-define("MAX_KB", '500');			//投稿容量制限 KB（phpの設定により2Mまで
+define("MAX_KB", '1024');			//投稿容量制限 KB（phpの設定により2Mまで
 define("MAX_W",  '250');			//投稿サイズ幅（これ以上はwidthを縮小
 define("MAX_H",  '250');			//投稿サイズ高さ
 define("PAGE_DEF", '5');			//一ページに表示する記事
-define("LOG_MAX",  '500');		//ログ最大行数
+define("LOG_MAX",  '2000');		//ログ最大行数
 define("ADMIN_PASS", 'admin_pass');	//管理者パス
 define("RE_COL", '789922');               //＞が付いた時の色
 define("PHP_SELF", 'futaba.php');	//このスクリプト名
@@ -31,7 +31,7 @@ define("PROXY_CHECK", 0);		//proxyの書込みを制限する y:1 n:0
 define("DISP_ID", 0);		//IDを表示する 強制:2 する:1 しない:0
 define("BR_CHECK", 15);		//改行を抑制する行数 しない:0
 define("IDSEED", 'idの種');		//idの種
-define("RESIMG", 0);		//レスに画像を貼る:1 貼らない:0
+define("RESIMG", 1);		//レスに画像を貼る:1 貼らない:0
 
 $path = realpath("./").'/'.IMG_DIR;
 $badstring = array("dummy_string","dummy_string2"); //拒絶する文字列
@@ -355,6 +355,9 @@ function foot(&$dat){
 - <a href="http://php.s3.to" target=_top>GazouBBS</a> + <a href="http://www.2chan.net/" target=_top>futaba</a>-
 </small>
 </center>
+<script>
+ l(); //LoadCookie
+</script>
 </body></html>';
 }
 ?>
@@ -536,6 +539,11 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   $tim = $time.substr(microtime(),2,3);
 
   // アップロード処理
+  if(isset($_FILES["upfile"]["error"])){//エラーチェック
+	if(in_array($_FILES["upfile"]["error"],[1,2])){
+		error('ファイルサイズが大きすぎます。');//容量オーバー
+	} 
+ }
   if($upfile&&file_exists($upfile)){
     $dest = ImageFile::getNew()->createTempFileName($path, $tim);
     move_uploaded_file($upfile, $dest);
@@ -739,7 +747,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
     }
 
     if(RENZOKU && $p && $time - $ltime < RENZOKU){
-      error("連続投稿はもうしばらく時間を置いてからお願い致します",$dest);
+      error("連続投稿はもうしばらく時間を置いてからお願い致しますあ",$dest);
     }
 
     if(RENZOKU && $p && $time - $ltime < RENZOKU2 && $upfile_name){
@@ -843,26 +851,9 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   fclose($fp);
 
   //クッキー保存
-  setcookie ("pwdc", $c_pass,time()+7*24*3600);  /* 1週間で期限切れ */
-  if(function_exists("mb_internal_encoding")&&function_exists("mb_convert_encoding")
-      &&function_exists("mb_substr")){
-    if(preg_match("/MSIE|Opera/",$_SERVER["HTTP_USER_AGENT"]) === 1){
-      $i=0;$c_name='';
-      mb_internal_encoding("UTF-8");
-      while($j=mb_substr($names,$i,1)){
-        $j = mb_convert_encoding($j, "UTF-16", "UTF-8");
-        $c_name.="%u".bin2hex($j);
-        $i++;
-      }
-      header(
-        "Set-Cookie: namec=$c_name; expires=".gmdate("D, d-M-Y H:i:s",time()+7*24*3600)." GMT",false
-      );
-    }
-    else{
-      $c_name=$names;
-      setcookie ("namec", $c_name,time()+7*24*3600);  /* 1週間で期限切れ */
-    }
-  }
+ setcookie ("pwdc", $c_pass,time()+7*24* 3600);  /* 1週間で期限切れ */
+ $c_name=$names;
+ setcookie ("namec", $c_name,time()+7*24*3600);  /* 1週間で期限切れ */
 
   if($dest&&file_exists($dest)){
     rename($dest,$path.$tim.$extension);
@@ -994,13 +985,13 @@ function usrdel($no,$pwd){
   $delno = array("dummy");
   $delflag = false;
   reset($_POST);
-  while ($item = each($_POST)){
-    if($item[1]=='delete'){
-      array_push($delno,$item[0]);
-      $delflag=true;
-    }
+  foreach($_POST as $key=>$val){
+	if($_POST[$key]==='delete'){
+		array_push($delno,$key);
+		$delflag=true;
+	}
   }
-
+	
   if($pwd==""&&$pwdc!=""){
     $pwd=$pwdc;
   }
@@ -1100,13 +1091,13 @@ function admindel($pass){
   $delflag = false;
   reset($_POST);
 
-  while ($item = each($_POST)){
-    if($item[1] == 'delete'){
-      array_push($delno,$item[0]);
-      $delflag=true;
-    }
-  }
-
+  foreach($_POST as $key=>$val){
+	if($_POST[$key]==='delete'){
+		array_push($delno,$key);
+		$delflag=true;
+	}
+ }
+	
   if($delflag){
     $fp = fopen(LOGFILE,"r+");
     set_file_buffer($fp, 0);
@@ -1252,9 +1243,10 @@ small { font-size:10pt }
 -->
 </STYLE>
 <title>'.TITLE.'</title>
-<script language="JavaScript"><!--
-function l(e){var P=getCookie("pwdc"),N=getCookie("namec"),i;with(document){for(i=0;i<forms.length;i++){if(forms[i].pwd)with(forms[i]){pwd.value=P;}if(forms[i].name)with(forms[i]){name.value=N;}}}};onload=l;function getCookie(key, tmp1, tmp2, xx1, xx2, xx3) {tmp1 = " " + document.cookie + ";";xx1 = xx2 = 0;len = tmp1.length;	while (xx1 < len) {xx2 = tmp1.indexOf(";", xx1);tmp2 = tmp1.substring(xx1 + 1, xx2);xx3 = tmp2.indexOf("=");if (tmp2.substring(0, xx3) == key) {return(unescape(tmp2.substring(xx3 + 1, xx2 - xx1 - 1)));}xx1 = xx2 + 1;}return("");}
-//--></script>
+<script>
+function l(){var b=loadCookie("pwdc"),d=loadCookie("namec"),c=loadCookie("emailc"),h=loadCookie("urlc"),a;for(a=0;a<document.forms.length;a++)document.forms[a].pwd&&(document.forms[a].pwd.value=b),document.forms[a].name&&(document.forms[a].name.value=d),document.forms[a].email&&(document.forms[a].email.value=c),document.forms[a].url&&(document.forms[a].url.value=h)}
+function loadCookie(b){var d=document.cookie;if(""==d)return"";var c=d.indexOf(b+"=");if(-1==c)return"";c+=b.length+1;b=d.indexOf(";",c);-1==b&&(b=d.length);return decodeURIComponent(d.substring(c,b))};
+</script>
 </head>
 <body bgcolor="#FFFFEE" text="#800000" link="#0000EE" vlink="#0000EE">
 <p align=right>
@@ -1278,12 +1270,7 @@ function l(e){var P=getCookie("pwdc"),N=getCookie("namec"),i;with(document){for(
 function CleanStr($message){
   global $admin;
   $trimed_message = trim($message);//先頭と末尾の空白除去
-  if (get_magic_quotes_gpc()) {//¥を削除
-    $strip_slashed_message = stripslashes($trimed_message);
-  }
-  else{
     $strip_slashed_message = $trimed_message;
-  }
 
   if($admin != ADMIN_PASS){//管理者はタグ可能
     $trimed_tag_message = htmlspecialchars($strip_slashed_message);//タグっ禁止

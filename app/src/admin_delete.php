@@ -14,12 +14,12 @@ function admindel($pass){
   $delflag = false;
   reset($_POST);
 
-  while ($item = each($_POST)){
-    if($item[1] == 'delete'){
-      array_push($delno,$item[0]);
-      $delflag=true;
-    }
-  }
+ foreach($_POST as $key=>$val){
+	if($_POST[$key]==='delete'){
+		array_push($delno,$key);
+		$delflag=true;
+	}
+ } 
 
   if($delflag){
     $fp = fopen(LOGFILE,"r+");
