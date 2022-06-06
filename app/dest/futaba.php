@@ -747,7 +747,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
     }
 
     if(RENZOKU && $p && $time - $ltime < RENZOKU){
-      error("連続投稿はもうしばらく時間を置いてからお願い致しますあ",$dest);
+      error("連続投稿はもうしばらく時間を置いてからお願い致します",$dest);
     }
 
     if(RENZOKU && $p && $time - $ltime < RENZOKU2 && $upfile_name){
