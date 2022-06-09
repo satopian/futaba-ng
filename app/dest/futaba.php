@@ -771,6 +771,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   // アップロード処理
   if($dest&&file_exists($dest)){
     $imax=count($line)>200 ? 200 : count($line)-1;
+    $chk = md5_file($dest);
 
     for($i=0;$i<$imax;$i++){ //画像重複チェック
 		if(!trim($line[$i])){
@@ -779,7 +780,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
 
       list(,,,,,,,,,$extensionp,,,$timep,$p,) = explode(",", $line[$i]);
 
-	  if($p&&$p==$is_uploaded&&file_exists($path.$timep.$extensionp)){
+	  if($chk===$p&&file_exists($path.$timep.$extensionp)){
         error("アップロードに失敗しました<br>同じ画像があります",$dest);
       }
     }
@@ -789,7 +790,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   isset($extension)?0:$extension="";
   isset($W)?0:$W="";
   isset($H)?0:$H="";
-  isset($chk)?0:$chk="";
+//   isset($chk)?0:$chk="";
   $newline = "$no,$now,$name,$email,$sub,$comment,$url,$host,$pass,$extension,$W,$H,$tim,$chk,\n";
   $newline.= implode("\n", $line);
   ftruncate($fp,0);
