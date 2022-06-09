@@ -127,10 +127,7 @@ function updatelog($resno=0){
   }
   $line = file(LOGFILE);
   $countline=count($line);
-  for($i = 0; $i < $countline; $i++){
-    list($no,) = explode(",", $line[$i]);
-    $lineindex[$no]=$i + 1; //逆変換テーブル作成
-  }
+  $lineindex = get_lineindex($line); // 逆変換テーブル作成
 
   $counttree = count($tree);
   for($page=0;$page<$counttree;$page+=PAGE_DEF){
@@ -143,14 +140,18 @@ function updatelog($resno=0){
     $dat.='<form action="'.PHP_SELF.'" method=POST>';
 
   for($i = $st; $i < $st+PAGE_DEF; $i++){
-    if(empty($tree[$i])){
+    if(!isset($tree[$i])){
       continue;
     }
     $treeline = explode(",", rtrim($tree[$i]));
     $disptree = $treeline[0];
-    $j=$lineindex[$disptree] - 1; //該当記事を探して$jにセット
-    if(empty($line[$j])){
-      continue;
+	if(!isset($lineindex[$disptree])){
+		continue;
+	}
+    $j=$lineindex[$disptree] ; //該当記事を探して$jにセット
+
+    if(!trim($line[$j])){
+		continue;
     } //$jが範囲外なら次の行
     
     list($no,$now,$name,$email,$sub,$com,$url,
@@ -192,7 +193,7 @@ function updatelog($resno=0){
     $dat.="\n<blockquote>$com</blockquote>";
 
      // そろそろ消える。
-     if($lineindex[$no]-1 >= LOG_MAX*0.95){
+     if($lineindex[$no] >= LOG_MAX*0.95){
       $dat.="<font color=\"#f00000\"><b>このスレは古いので、もうすぐ消えます。</b></font><br>\n";
      }
 
@@ -213,8 +214,8 @@ function updatelog($resno=0){
 
     for($k = $s; $k < count($treeline); $k++){
       $disptree = $treeline[$k];
-      $j=$lineindex[$disptree] - 1;
-      if($line[$j]==""){
+      $j=$lineindex[$disptree] ;
+      if(!trim($line[$j])){
         continue;
       }
       list($no,$now,$name,$email,$sub,$com,$url,
@@ -538,6 +539,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   $time = time();
   $tim = $time.substr(microtime(),2,3);
 
+
   // アップロード処理
   if(isset($_FILES["upfile"]["error"])){//エラーチェック
 	if(in_array($_FILES["upfile"]["error"],[1,2])){
@@ -724,13 +726,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   }
   $line = explode("\n",$buf);
   $countline=count($line);
-  for($i = 0; $i < $countline; $i++){
-    if($line[$i]!=""){
-      list($artno,)=explode(",", rtrim($line[$i]));  //逆変換テーブル作成
-      $lineindex[$artno]=$i+1;
-      $line[$i].="\n";
-    }
-  }
+  $lineindex=get_lineindex($line);//逆変換テーブル作成
 
   // 二重投稿チェック
   $imax=count($line)>20 ? 20 : count($line)-1;
@@ -777,8 +773,13 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
     $imax=count($line)>200 ? 200 : count($line)-1;
 
     for($i=0;$i<$imax;$i++){ //画像重複チェック
+		if(!trim($line[$i])){
+			continue;
+		}
+
       list(,,,,,,,,,$extensionp,,,$timep,$p,) = explode(",", $line[$i]);
-      if($p==$is_uploaded&&file_exists($path.$timep.$extensionp)){
+
+	  if($p&&$p==$is_uploaded&&file_exists($path.$timep.$extensionp)){
         error("アップロードに失敗しました<br>同じ画像があります",$dest);
       }
     }
@@ -789,8 +790,8 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   isset($W)?0:$W="";
   isset($H)?0:$H="";
   isset($chk)?0:$chk="";
-  $newline = "$no,$now,$name,$email,$sub,$comment,$url,$host,$pass,$extension,$W,$H,$tim,$,\n";
-  $newline.= implode('', $line);
+  $newline = "$no,$now,$name,$email,$sub,$comment,$url,$host,$pass,$extension,$W,$H,$tim,$chk,\n";
+  $newline.= implode("\n", $line);
   ftruncate($fp,0);
   set_file_buffer($fp, 0);
   rewind($fp);
@@ -810,12 +811,12 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
     if($line[$i]!=""){
       $line[$i].="\n";
       $j=explode(",", rtrim($line[$i]));
-      if($lineindex[$j[0]]==0){
-        $line[$i]='';
+      if(!isset($lineindex[$j[0]])){
+        unset($line[$i]);
       } 
     } 
-  }
-  if($resto){
+}
+	if($resto){
     for($i = 0; $i < $countline; $i++){
       $rtno = explode(",", rtrim($line[$i]));
       if($rtno[0]==$resto){
@@ -895,29 +896,6 @@ function get_gd_ver(){
 }
 ?>
 
-<?php
-/**
- * Seek MD5 checksum of file.
- *
- * @params string $inFile file path.
- * @return string MD5 checksum.
- *         false Is error.
- */
-function md5_of_file($in_file) {
- if (file_exists($in_file)){
-   if(function_exists('md5_file')){
-     return md5_file($in_file);
-   }else{
-     $fd = fopen($in_file, 'r');
-     $fileContents = fread($fd, filesize($in_file));
-     fclose ($fd);
-     return md5($fileContents);
-   }
- }else{
-   return false;
- }
-}
-?>
 
 <?php
 /**
@@ -1346,6 +1324,20 @@ function init(){
   if($err){
     error($err);
   }
+}
+?>
+<?php
+//逆変換テーブル作成
+function get_lineindex ($line){
+	$lineindex = [];
+	foreach($line as $i =>$value){
+		if(!trim($value)){
+		continue;
+		}
+		list($no,) = explode(",", $value);
+		$lineindex[$no] = $i; // 値にkey keyに記事no
+	}
+	return $lineindex;
 }
 ?>
 
