@@ -38,9 +38,7 @@ $badstring = array("dummy_string","dummy_string2"); //拒絶する文字列
 $badfile = array("dummy","dummy2"); //拒絶するファイルのmd5
 $badip = array("addr.dummy.com","addr2.dummy.com"); //拒絶するホスト
 $addinfo='';
-?>
 
-<?php
 /**
  * Rendering of message form.
  *
@@ -99,9 +97,7 @@ function form(&$dat,$resno,$admin=""){
   <LI>画像は横 '.MAX_W.'ピクセル、縦 '.MAX_H.'ピクセルを超えると縮小表示されます。
   '.$addinfo.'</small></td></tr></table></form></center><hr>';
 }
-?>
 
-<?php
 /**
  * Update message.
  * 
@@ -339,9 +335,7 @@ function updatelog($resno=0){
     unlink(($page/PAGE_DEF+1).PHP_EXT);
   }
 }
-?>
 
-<?php
 /* フッタ */
 /**
  * Rendering of footer.
@@ -361,9 +355,7 @@ function foot(&$dat){
 </script>
 </body></html>';
 }
-?>
 
-<?php
 /**
  * Create http link.
  *
@@ -377,9 +369,7 @@ function auto_link($message){
     $message
   );
 }
-?>
 
-<?php
 /**
  * Rendering of error page.
  *
@@ -402,9 +392,7 @@ function error($mes,$dest=''){
         <br><br><hr size=1>";
   die("</body></html>");
 }
-?>
 
-<?php
 /**
  * Connect to port with reverse proxy. 
  * 
@@ -422,9 +410,7 @@ function proxy_connect($port){
     return 1;
   }
 }
-?>
 
-<?php
 //サムネイル作成
 /**
  * Build of thumbnail file.
@@ -514,9 +500,7 @@ function thumb($path,$tim,$ext){
   ImageDestroy($im_in);
   ImageDestroy($im_out);
 }
-?>
 
-<?php
 /**
  * Publish to futaba borad.
  *
@@ -867,9 +851,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   echo "<html><head><meta charset=\"UTF-8\"><meta http-equiv=\"refresh\" content=\"1;URL=".PHP_SELF2."\"></head>";
   echo "<body>$mes 画面を切り替えます</body></html>";
 }
-?>
 
-<?php
 /**
  * Get GD Version.
  *
@@ -949,9 +931,7 @@ function treedel($delno){
   }
   fclose($fp);
 }
-?>
 
-<?php
 /** 
  * Delete of user post message.
  *
@@ -999,6 +979,9 @@ function usrdel($no,$pwd){
   $flag = false;
   $countline=count($line)-1;
   for($i = 0; $i<$countline; $i++){
+	if(!trim($line[$i])){
+		continue;
+	}
     list($dno,,,,,,,$dhost,$pass,$dext,,,$dtim,) = explode(",", $line[$i]);
     if(array_search($dno,$delno) && (substr(md5($pwd),2,8) == $pass || $dhost == $host||ADMIN_PASS==$pwd)){
       $flag = true;
@@ -1018,10 +1001,9 @@ function usrdel($no,$pwd){
   if(!$flag){
     error("該当記事が見つからないかパスワードが間違っています");
   }
-}
-?>
 
-<?php
+}
+
 /**
  * Validatio of password. 
  * ...And rendering form.
@@ -1053,9 +1035,7 @@ function valid($pass){
     die("</body></html>");
   }
 }
-?>
 
-<?php
 /**
  * Administration of message log.
  *
@@ -1092,15 +1072,12 @@ function admindel($pass){
     $line = explode("\n",$buf);
     $countline=count($line)-1;
   
-    for($i = 0; $i < $countline; $i++){
-      if($line[$i]!=""){
-        $line[$i].="\n";
-      }
-    }
-
     $find = false;
 
     for($i = 0; $i < $countline; $i++){
+		if(!trim($line[$i])){
+			continue;
+		}
       list($no,$now,$name,$email,$sub,$com,$url,$host,$pw,$ext,$w,$h,$tim,$chk) = explode(",",$line[$i]);
       if($onlyimgdel=="on"){
         if(array_search($no,$delno)){//画像だけ削除
@@ -1110,9 +1087,9 @@ function admindel($pass){
         }
       }
       else{
-        if(array_search($no,$delno)){//削除の時は空に
+        if(array_search($no,$delno)){//削除
           $find = true;
-          $line[$i] = "";
+          unset($line[$i]);
           $delfile = $path.$tim.$ext;	//削除ファイル
           if(is_file($delfile)){
             unlink($delfile);//削除
@@ -1129,7 +1106,7 @@ function admindel($pass){
       ftruncate($fp,0);
       set_file_buffer($fp, 0);
       rewind($fp);
-      fputs($fp, implode('', $line));
+      fputs($fp, implode("\n", $line));
     }
     fclose($fp);
   }
@@ -1149,6 +1126,9 @@ function admindel($pass){
   $line = file(LOGFILE);
 
   for($j = 0; $j < count($line); $j++){
+	  if(!trim($line[$j])){
+		  continue;
+	  }
     $img_flag = false;
     list($no,$now,$name,$email,$sub,$com,$url,
          $host,$pw,$ext,$w,$h,$time,$chk) = explode(",",$line[$j]);
@@ -1201,9 +1181,7 @@ function admindel($pass){
   echo "【 画像データ合計 : <b>$all</b> KB 】";
   die("</center></body></html>");
 }
-?>
 
-<?php
 /**
  * Rendering of header. 
  * 
@@ -1238,9 +1216,7 @@ function loadCookie(b){var d=document.cookie;if(""==d)return"";var c=d.indexOf(b
 <hr width="90%" size=1>
 ';
 }
-?>
 
-<?php
 /**
  * prettify of message.
  * 
@@ -1262,9 +1238,7 @@ function CleanStr($message){
     return str_replace(",", "&#44;", $strip_slashed_message);//カンマを変換
   }
 }
-?>
 
-<?php
 /**
  * Bootstrap setting.
  *
@@ -1327,8 +1301,6 @@ function init(){
     error($err);
   }
 }
-?>
-<?php
 //逆変換テーブル作成
 function get_lineindex ($line){
 	$lineindex = [];
@@ -1341,9 +1313,7 @@ function get_lineindex ($line){
 	}
 	return $lineindex;
 }
-?>
 
-<?php
 init();		//←■■初期設定後は不要なので削除可■■
 $iniv=array('mode','name','email','sub','com','pwd','upfile','upfile_name','resto','pass','res','post','no');
 foreach($iniv as $iniva){
@@ -1378,4 +1348,5 @@ switch($mode){
       echo "<META HTTP-EQUIV=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
     }
 }
-?>
+
+
