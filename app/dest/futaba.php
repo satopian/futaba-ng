@@ -459,7 +459,7 @@ function thumb($path,$tim,$ext){
 
       @exec(realpath("./gif2png")." $fname",$a);
 
-      if(!file_exists($path.$tim.'.png')){
+      if(!is_file($path.$tim.'.png')){
         return;
       }
       $im_in = @ImageCreateFromPNG($path.$tim.'.png');
@@ -546,7 +546,11 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
 		error('ファイルサイズが大きすぎます。');//容量オーバー
 	} 
  }
-  if($upfile&&file_exists($upfile)){
+ $W="";
+ $H="";
+ $extension="";
+
+  if($upfile&&is_file($upfile)){
     $dest = ImageFile::getNew()->createTempFileName($path, $tim);
     move_uploaded_file($upfile, $dest);
     //↑でエラーなら↓に変更
@@ -769,7 +773,8 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
     }
   }
   // アップロード処理
-  if($dest&&file_exists($dest)){
+  $chk=''; 
+  if($dest&&is_file($dest)){
     $imax=count($line)>200 ? 200 : count($line)-1;
     $chk = md5_file($dest);
 
@@ -780,17 +785,13 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
 
       list(,,,,,,,,,$extensionp,,,$timep,$p,) = explode(",", $line[$i]);
 
-	  if($chk===$p&&file_exists($path.$timep.$extensionp)){
+	  if($chk===$p&&is_file($path.$timep.$extensionp)){
         error("アップロードに失敗しました<br>同じ画像があります",$dest);
       }
     }
   }
   list($lastno,) = explode(",", $line[0]);
   $no = $lastno + 1;
-  isset($extension)?0:$extension="";
-  isset($W)?0:$W="";
-  isset($H)?0:$H="";
-//   isset($chk)?0:$chk="";
   $newline = "$no,$now,$name,$email,$sub,$comment,$url,$host,$pass,$extension,$W,$H,$tim,$chk,\n";
   $newline.= implode("\n", $line);
   ftruncate($fp,0);
@@ -857,7 +858,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
  $c_name=$names;
  setcookie ("namec", $c_name,time()+7*24*3600);  /* 1週間で期限切れ */
 
-  if($dest&&file_exists($dest)){
+  if($dest&&is_file($dest)){
     rename($dest,$path.$tim.$extension);
     if(USE_THUMB){thumb($path,$tim,$extension);}
   }
@@ -1277,7 +1278,7 @@ function init(){
   }
 
   foreach($chkfile as $value){
-    if(!file_exists(realpath($value))){
+    if(!is_file(realpath($value))){
       $fp = fopen($value, "w");
       set_file_buffer($fp, 0);
       if($value==LOGFILE){
@@ -1287,7 +1288,7 @@ function init(){
         fputs($fp,"1\n");
       }
       fclose($fp);
-      if(file_exists(realpath($value))){
+      if(is_file(realpath($value))){
         @chmod($value,0666);
       }
     }
