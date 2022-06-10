@@ -1,4 +1,9 @@
 {
+  "name": "futaba",
+  "private": true,
+  "repository": {
+    "private": true
+  },
   "engines": {
     "node": ">= 10.0.7"
   },
