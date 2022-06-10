@@ -768,7 +768,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
       if(is_file(THUMB_DIR.$dtime.'s.jpg')){
         unlink(THUMB_DIR.$dtime.'s.jpg');
       }
-      $line[$d] = "";
+      unset($line[$d]);
       treedel($dno);
     }
   }
