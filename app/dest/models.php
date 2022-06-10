@@ -53,6 +53,9 @@ class ImageFile {
     }
   }
 }
+?>
+
+<?php
 
 trait uploadFile {
   /**
@@ -84,6 +87,9 @@ trait uploadFile {
     return false;
   }
 }
+?>
+
+<?php
 
 trait Trip {
   /**
@@ -129,6 +135,9 @@ trait Trip {
   }
 }
 
+?>
+
+<?php
 /**
  * Prettify text
  */
@@ -292,3 +301,5 @@ class PrettifyText {
     return str_replace(",", "&#44;", $target_string);
   }
 }
+
+?>

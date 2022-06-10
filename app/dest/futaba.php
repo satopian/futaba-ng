@@ -1,7 +1,7 @@
+<?php require('repositories.php'); ?>
+<?php require('models.php'); ?>
+<?php require('thumbnail_gd.php'); ?>
 <?php
-require('repositories.php');
-require('models.php');
-require('thumbnail_gd.php');
 extract($_POST,EXTR_SKIP);
 extract($_GET,EXTR_SKIP);
 extract($_COOKIE,EXTR_SKIP);
@@ -36,13 +36,14 @@ define("RESIMG", 1);		//レスに画像を貼る:1 貼らない:0
 define("RE_SAMPLED", 1);		//サムネイルの画質向上:1 :0 問題がなければ1
 define('THUMB_Q', '92'); //サムネイルのJPEG劣化率
 
-
 $path = realpath("./").'/'.IMG_DIR;
 $badstring = array("dummy_string","dummy_string2"); //拒絶する文字列
 $badfile = array("dummy","dummy2"); //拒絶するファイルのmd5
 $badip = array("addr.dummy.com","addr2.dummy.com"); //拒絶するホスト
 $addinfo='';
+?>
 
+<?php
 /**
  * Rendering of message form.
  *
@@ -101,7 +102,9 @@ function form(&$dat,$resno,$admin=""){
   <LI>画像は横 '.MAX_W.'ピクセル、縦 '.MAX_H.'ピクセルを超えると縮小表示されます。
   '.$addinfo.'</small></td></tr></table></form></center><hr>';
 }
+?>
 
+<?php
 /**
  * Update message.
  * 
@@ -332,14 +335,16 @@ function updatelog($resno=0){
     rewind($fp);
     fputs($fp, $dat);
     fclose($fp);
-    chmod($logfilename,0666);
+    chmod($logfilename,0606);
   }
 
   if(!$resno&&is_file(($page/PAGE_DEF+1).PHP_EXT)){
     unlink(($page/PAGE_DEF+1).PHP_EXT);
   }
 }
+?>
 
+<?php
 /* フッタ */
 /**
  * Rendering of footer.
@@ -359,7 +364,9 @@ function foot(&$dat){
 </script>
 </body></html>';
 }
+?>
 
+<?php
 /**
  * Create http link.
  *
@@ -373,7 +380,9 @@ function auto_link($message){
     $message
   );
 }
+?>
 
+<?php
 /**
  * Rendering of error page.
  *
@@ -396,7 +405,9 @@ function error($mes,$dest=''){
         <br><br><hr size=1>";
   die("</body></html>");
 }
+?>
 
+<?php
 /**
  * Connect to port with reverse proxy. 
  * 
@@ -414,7 +425,9 @@ function proxy_connect($port){
     return 1;
   }
 }
+?>
 
+<?php
 /**
  * Publish to futaba borad.
  *
@@ -466,7 +479,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
       error("アップロードに失敗しました<br>同じ画像がありました", $dest); //拒絶画像
       return;
     }
-    chmod($dest,0666);
+    chmod($dest,0606);
    
     // size[0] is width, size[1] is height. 
     $desired_size = ImageFile::adjustmentImageCanvasSize(
@@ -765,7 +778,9 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   echo "<html><head><meta charset=\"UTF-8\"><meta http-equiv=\"refresh\" content=\"1;URL=".PHP_SELF2."\"></head>";
   echo "<body>$mes 画面を切り替えます</body></html>";
 }
+?>
 
+<?php
 /**
  * Get GD Version.
  *
@@ -792,7 +807,9 @@ function get_gd_ver(){
   $phpinfo=substr($phpinfo,$length);
   return $phpinfo;
 }
+?>
 
+<?php
 //GD版が使えるかチェック
 function gd_check(){
 	$check = array("ImageCreate","ImageCopyResized","ImageCreateFromJPEG","ImageJPEG","ImageDestroy");
@@ -808,8 +825,8 @@ function gd_check(){
 	}
 	return true;
 }
-
-
+?>
+<?php
 /**
  * Delete of message.
  *
@@ -859,7 +876,9 @@ function treedel($delno){
   }
   fclose($fp);
 }
+?>
 
+<?php
 /** 
  * Delete of user post message.
  *
@@ -931,7 +950,9 @@ function usrdel($no,$pwd){
   }
 
 }
+?>
 
+<?php
 /**
  * Validatio of password. 
  * ...And rendering form.
@@ -963,7 +984,9 @@ function valid($pass){
     die("</body></html>");
   }
 }
+?>
 
+<?php
 /**
  * Administration of message log.
  *
@@ -1109,7 +1132,9 @@ function admindel($pass){
   echo "【 画像データ合計 : <b>$all</b> KB 】";
   die("</center></body></html>");
 }
+?>
 
+<?php
 /**
  * Rendering of header. 
  * 
@@ -1144,7 +1169,9 @@ function loadCookie(b){var d=document.cookie;if(""==d)return"";var c=d.indexOf(b
 <hr width="90%" size=1>
 ';
 }
+?>
 
+<?php
 /**
  * prettify of message.
  * 
@@ -1154,7 +1181,7 @@ function loadCookie(b){var d=document.cookie;if(""==d)return"";var c=d.indexOf(b
 function CleanStr($message){
   global $admin;
   $trimed_message = trim($message);//先頭と末尾の空白除去
-    $strip_slashed_message = $trimed_message;
+  $strip_slashed_message = $trimed_message;
 
   if($admin != ADMIN_PASS){//管理者はタグ可能
     $trimed_tag_message = htmlspecialchars($strip_slashed_message);//タグっ禁止
@@ -1166,7 +1193,23 @@ function CleanStr($message){
     return str_replace(",", "&#44;", $strip_slashed_message);//カンマを変換
   }
 }
+?>
 
+<?php
+//逆変換テーブル作成
+function get_lineindex ($line){
+	$lineindex = [];
+	foreach($line as $i =>$value){
+		if(!trim($value)){
+		continue;
+		}
+		list($no,) = explode(",", $value);
+		$lineindex[$no] = $i; // 値にkey keyに記事no
+	}
+	return $lineindex;
+}
+?>
+<?php
 /**
  * Bootstrap setting.
  *
@@ -1180,7 +1223,7 @@ function init(){
   }
 
   foreach($chkfile as $value){
-    if(!is_file(realpath($value))){
+    if(!file_exists(realpath($value))){
       $fp = fopen($value, "w");
       set_file_buffer($fp, 0);
       if($value==LOGFILE){
@@ -1190,8 +1233,8 @@ function init(){
         fputs($fp,"1\n");
       }
       fclose($fp);
-      if(is_file(realpath($value))){
-        @chmod($value,0666);
+      if(file_exists(realpath($value))){
+        @chmod($value,0606);
       }
     }
     if(!is_writable(realpath($value))){
@@ -1201,8 +1244,8 @@ function init(){
       $err.=$value."を読めません<br>";
     }
   }
-  @mkdir(IMG_DIR,0777);
-  @chmod(IMG_DIR,0777);
+  @mkdir(IMG_DIR,0707);
+  @chmod(IMG_DIR,0707);
   if(!is_dir(realpath(IMG_DIR))){
     $err.=IMG_DIR."がありません<br>";
   }
@@ -1213,8 +1256,8 @@ function init(){
     $err.=IMG_DIR."を読めません<br>";
   }
   if(USE_THUMB){
-    @mkdir(THUMB_DIR,0777);
-    @chmod(THUMB_DIR,0777);
+    @mkdir(THUMB_DIR,0707);
+    @chmod(THUMB_DIR,0707);
     if(!is_dir(realpath(IMG_DIR))){
       $err.=THUMB_DIR."がありません<br>";
     }
@@ -1229,19 +1272,9 @@ function init(){
     error($err);
   }
 }
-//逆変換テーブル作成
-function get_lineindex ($line){
-	$lineindex = [];
-	foreach($line as $i =>$value){
-		if(!trim($value)){
-		continue;
-		}
-		list($no,) = explode(",", $value);
-		$lineindex[$no] = $i; // 値にkey keyに記事no
-	}
-	return $lineindex;
-}
+?>
 
+<?php
 init();		//←■■初期設定後は不要なので削除可■■
 $iniv=array('mode','name','email','sub','com','pwd','upfile','upfile_name','resto','pass','res','post','no');
 foreach($iniv as $iniva){
@@ -1276,5 +1309,4 @@ switch($mode){
       echo "<META HTTP-EQUIV=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
     }
 }
-
-
+?>

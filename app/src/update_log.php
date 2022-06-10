@@ -229,7 +229,7 @@ function updatelog($resno=0){
     rewind($fp);
     fputs($fp, $dat);
     fclose($fp);
-    chmod($logfilename,0666);
+    chmod($logfilename,0606);
   }
 
   if(!$resno&&is_file(($page/PAGE_DEF+1).PHP_EXT)){

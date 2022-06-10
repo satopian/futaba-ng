@@ -50,7 +50,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
       error("アップロードに失敗しました<br>同じ画像がありました", $dest); //拒絶画像
       return;
     }
-    chmod($dest,0666);
+    chmod($dest,0606);
    
     // size[0] is width, size[1] is height. 
     $desired_size = ImageFile::adjustmentImageCanvasSize(

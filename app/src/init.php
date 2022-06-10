@@ -23,7 +23,7 @@ function init(){
       }
       fclose($fp);
       if(file_exists(realpath($value))){
-        @chmod($value,0666);
+        @chmod($value,0606);
       }
     }
     if(!is_writable(realpath($value))){
@@ -33,8 +33,8 @@ function init(){
       $err.=$value."を読めません<br>";
     }
   }
-  @mkdir(IMG_DIR,0777);
-  @chmod(IMG_DIR,0777);
+  @mkdir(IMG_DIR,0707);
+  @chmod(IMG_DIR,0707);
   if(!is_dir(realpath(IMG_DIR))){
     $err.=IMG_DIR."がありません<br>";
   }
@@ -45,8 +45,8 @@ function init(){
     $err.=IMG_DIR."を読めません<br>";
   }
   if(USE_THUMB){
-    @mkdir(THUMB_DIR,0777);
-    @chmod(THUMB_DIR,0777);
+    @mkdir(THUMB_DIR,0707);
+    @chmod(THUMB_DIR,0707);
     if(!is_dir(realpath(IMG_DIR))){
       $err.=THUMB_DIR."がありません<br>";
     }

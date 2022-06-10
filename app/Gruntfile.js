@@ -27,7 +27,8 @@ module.exports = function(grunt) {
         options: {
           banner: [
             "<?php require('repositories.php'); ?>\n",
-            "<?php require('models.php'); ?>\n"
+            "<?php require('models.php'); ?>\n",
+            "<?php require('thumbnail_gd.php'); ?>\n"
           ].join("")
         },
         src: [
@@ -48,6 +49,7 @@ module.exports = function(grunt) {
           'src/admin_delete.php',
           'src/head.php',
           'src/clean_str.php',
+          'src/get_lineindex.php',
           'src/init.php',
           'src/main.php'
         ],
