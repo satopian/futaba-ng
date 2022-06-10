@@ -21,8 +21,18 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   $time = time();
   $tim = $time.substr(microtime(),2,3);
 
+
   // アップロード処理
-  if($upfile&&file_exists($upfile)){
+  if(isset($_FILES["upfile"]["error"])){//エラーチェック
+	if(in_array($_FILES["upfile"]["error"],[1,2])){
+		error('ファイルサイズが大きすぎます。');//容量オーバー
+	} 
+ }
+ $W="";
+ $H="";
+ $extension="";
+
+  if($upfile&&is_file($upfile)){
     $dest = ImageFile::getNew()->createTempFileName($path, $tim);
     move_uploaded_file($upfile, $dest);
     //↑でエラーなら↓に変更
@@ -202,13 +212,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   }
   $line = explode("\n",$buf);
   $countline=count($line);
-  for($i = 0; $i < $countline; $i++){
-    if($line[$i]!=""){
-      list($artno,)=explode(",", rtrim($line[$i]));  //逆変換テーブル作成
-      $lineindex[$artno]=$i+1;
-      $line[$i].="\n";
-    }
-  }
+  $lineindex=get_lineindex($line);//逆変換テーブル作成
 
   // 二重投稿チェック
   $imax=count($line)>20 ? 20 : count($line)-1;
@@ -246,29 +250,32 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
       if(is_file(THUMB_DIR.$dtime.'s.jpg')){
         unlink(THUMB_DIR.$dtime.'s.jpg');
       }
-      $line[$d] = "";
+      unset($line[$d]);
       treedel($dno);
     }
   }
   // アップロード処理
-  if($dest&&file_exists($dest)){
+  $chk=''; 
+  if($dest&&is_file($dest)){
     $imax=count($line)>200 ? 200 : count($line)-1;
+    $chk = md5_file($dest);
 
     for($i=0;$i<$imax;$i++){ //画像重複チェック
+		if(!trim($line[$i])){
+			continue;
+		}
+
       list(,,,,,,,,,$extensionp,,,$timep,$p,) = explode(",", $line[$i]);
-      if($p==$is_uploaded&&file_exists($path.$timep.$extensionp)){
+
+	  if($chk===$p&&is_file($path.$timep.$extensionp)){
         error("アップロードに失敗しました<br>同じ画像があります",$dest);
       }
     }
   }
   list($lastno,) = explode(",", $line[0]);
   $no = $lastno + 1;
-  isset($extension)?0:$extension="";
-  isset($W)?0:$W="";
-  isset($H)?0:$H="";
-  isset($chk)?0:$chk="";
-  $newline = "$no,$now,$name,$email,$sub,$comment,$url,$host,$pass,$extension,$W,$H,$tim,$,\n";
-  $newline.= implode('', $line);
+  $newline = "$no,$now,$name,$email,$sub,$comment,$url,$host,$pass,$extension,$W,$H,$tim,$chk,\n";
+  $newline.= implode("\n", $line);
   ftruncate($fp,0);
   set_file_buffer($fp, 0);
   rewind($fp);
@@ -288,12 +295,12 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
     if($line[$i]!=""){
       $line[$i].="\n";
       $j=explode(",", rtrim($line[$i]));
-      if($lineindex[$j[0]]==0){
-        $line[$i]='';
+      if(!isset($lineindex[$j[0]])){
+        unset($line[$i]);
       } 
     } 
-  }
-  if($resto){
+}
+	if($resto){
     for($i = 0; $i < $countline; $i++){
       $rtno = explode(",", rtrim($line[$i]));
       if($rtno[0]==$resto){
@@ -329,13 +336,13 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   fclose($fp);
 
   //クッキー保存
-  setcookie ("pwdc", $c_pass,time()+7*24* 3600);  /* 1週間で期限切れ */
-  $c_name=$names;
-  setcookie ("namec", $c_name,time()+7*24*3600);  /* 1週間で期限切れ */
- 
-  if($dest&&file_exists($dest)){
+ setcookie ("pwdc", $c_pass,time()+7*24* 3600);  /* 1週間で期限切れ */
+ $c_name=$names;
+ setcookie ("namec", $c_name,time()+7*24*3600);  /* 1週間で期限切れ */
+
+  if($dest&&is_file($dest)){
     rename($dest,$path.$tim.$extension);
-    if(USE_THUMB){thumb($path,$tim,$extension);}
+    if(USE_THUMB){thumb($path,$tim,$extension,MAX_W,MAX_H);}
   }
   updatelog();
 

@@ -24,10 +24,7 @@ function updatelog($resno=0){
   }
   $line = file(LOGFILE);
   $countline=count($line);
-  for($i = 0; $i < $countline; $i++){
-    list($no,) = explode(",", $line[$i]);
-    $lineindex[$no]=$i + 1; //逆変換テーブル作成
-  }
+  $lineindex = get_lineindex($line); // 逆変換テーブル作成
 
   $counttree = count($tree);
   for($page=0;$page<$counttree;$page+=PAGE_DEF){
@@ -40,14 +37,18 @@ function updatelog($resno=0){
     $dat.='<form action="'.PHP_SELF.'" method=POST>';
 
   for($i = $st; $i < $st+PAGE_DEF; $i++){
-    if(empty($tree[$i])){
+    if(!isset($tree[$i])){
       continue;
     }
     $treeline = explode(",", rtrim($tree[$i]));
     $disptree = $treeline[0];
-    $j=$lineindex[$disptree] - 1; //該当記事を探して$jにセット
-    if(empty($line[$j])){
-      continue;
+	if(!isset($lineindex[$disptree])){
+		continue;
+	}
+    $j=$lineindex[$disptree] ; //該当記事を探して$jにセット
+
+    if(!trim($line[$j])){
+		continue;
     } //$jが範囲外なら次の行
     
     list($no,$now,$name,$email,$sub,$com,$url,
@@ -89,7 +90,7 @@ function updatelog($resno=0){
     $dat.="\n<blockquote>$com</blockquote>";
 
      // そろそろ消える。
-     if($lineindex[$no]-1 >= LOG_MAX*0.95){
+     if($lineindex[$no] >= LOG_MAX*0.95){
       $dat.="<font color=\"#f00000\"><b>このスレは古いので、もうすぐ消えます。</b></font><br>\n";
      }
 
@@ -110,8 +111,8 @@ function updatelog($resno=0){
 
     for($k = $s; $k < count($treeline); $k++){
       $disptree = $treeline[$k];
-      $j=$lineindex[$disptree] - 1;
-      if($line[$j]==""){
+      $j=$lineindex[$disptree] ;
+      if(!trim($line[$j])){
         continue;
       }
       list($no,$now,$name,$email,$sub,$com,$url,

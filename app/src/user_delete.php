@@ -17,7 +17,7 @@ function usrdel($no,$pwd){
 		array_push($delno,$key);
 		$delflag=true;
 	}
- }
+  }
 	
   if($pwd==""&&$pwdc!=""){
     $pwd=$pwdc;
@@ -46,6 +46,9 @@ function usrdel($no,$pwd){
   $flag = false;
   $countline=count($line)-1;
   for($i = 0; $i<$countline; $i++){
+	if(!trim($line[$i])){
+		continue;
+	}
     list($dno,,,,,,,$dhost,$pass,$dext,,,$dtim,) = explode(",", $line[$i]);
     if(array_search($dno,$delno) && (substr(md5($pwd),2,8) == $pass || $dhost == $host||ADMIN_PASS==$pwd)){
       $flag = true;
@@ -65,5 +68,6 @@ function usrdel($no,$pwd){
   if(!$flag){
     error("該当記事が見つからないかパスワードが間違っています");
   }
+
 }
 ?>

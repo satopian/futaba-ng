@@ -14,13 +14,13 @@ function admindel($pass){
   $delflag = false;
   reset($_POST);
 
- foreach($_POST as $key=>$val){
+  foreach($_POST as $key=>$val){
 	if($_POST[$key]==='delete'){
 		array_push($delno,$key);
 		$delflag=true;
 	}
- } 
-
+ }
+	
   if($delflag){
     $fp = fopen(LOGFILE,"r+");
     set_file_buffer($fp, 0);
@@ -35,15 +35,12 @@ function admindel($pass){
     $line = explode("\n",$buf);
     $countline=count($line)-1;
   
-    for($i = 0; $i < $countline; $i++){
-      if($line[$i]!=""){
-        $line[$i].="\n";
-      }
-    }
-
     $find = false;
 
     for($i = 0; $i < $countline; $i++){
+		if(!trim($line[$i])){
+			continue;
+		}
       list($no,$now,$name,$email,$sub,$com,$url,$host,$pw,$ext,$w,$h,$tim,$chk) = explode(",",$line[$i]);
       if($onlyimgdel=="on"){
         if(array_search($no,$delno)){//画像だけ削除
@@ -53,9 +50,9 @@ function admindel($pass){
         }
       }
       else{
-        if(array_search($no,$delno)){//削除の時は空に
+        if(array_search($no,$delno)){//削除
           $find = true;
-          $line[$i] = "";
+          unset($line[$i]);
           $delfile = $path.$tim.$ext;	//削除ファイル
           if(is_file($delfile)){
             unlink($delfile);//削除
@@ -72,7 +69,7 @@ function admindel($pass){
       ftruncate($fp,0);
       set_file_buffer($fp, 0);
       rewind($fp);
-      fputs($fp, implode('', $line));
+      fputs($fp, implode("\n", $line));
     }
     fclose($fp);
   }
@@ -92,6 +89,9 @@ function admindel($pass){
   $line = file(LOGFILE);
 
   for($j = 0; $j < count($line); $j++){
+	  if(!trim($line[$j])){
+		  continue;
+	  }
     $img_flag = false;
     list($no,$now,$name,$email,$sub,$com,$url,
          $host,$pw,$ext,$w,$h,$time,$chk) = explode(",",$line[$j]);
