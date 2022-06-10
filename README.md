@@ -27,7 +27,7 @@ This script aims running with PHP 5.4.15 or later...
 - PHP 5.4.15 or later
 ```
 > cd app
-> grunt concat:model
+> grunt concat:models
 > grunt concat:futaba
 > grunt shell:phpRunning
 ```
