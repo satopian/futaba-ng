@@ -11,9 +11,9 @@ PHP4のふたばの画像掲示板をPHP5対応に改造しリファクタリン
 - CSRFトークンをセットできない構造のため、CSRF攻撃に対して脆弱です。
 - 出力時の特殊文字のエスケープは実装されていません。
 - XSSの検証は不十分です。
-- そのほかセキュリティリスクに関する調査も不十分かもしれません。(改造して数日なので不明な点がまだあります)  
-セキュリティチェックのテスト項目が存在していましたが私の知識ではよくわかりませんでした。  
-また、srcと関数単体のテスト、ファイルの結合も私にはわからないので、destのファイルを直接編集させていただきました。  
+- `$_POST`の取得に`extract()`が使用されているので、任意に変数がセットされてしまう脆弱性があります。  
+- そのほかセキュリティリスクに関する調査も不十分です。
+
 誰でも投稿できるウェブに設置したときに問題が発生しても、何もできませんのでよろしくお願い致します。  
 
 futaba.php is Message board scripts.  
@@ -25,7 +25,25 @@ This script aims running with PHP 5.4.15 or later...
 
 # How to running
 - PHP 5.4.15 or later
+```
+> cd app
+> grunt concat:model
+> grunt concat:futaba
+> grunt shell:phpRunning
+```
 
+# ToDo
+
+Script charactor code is UTF-8, But previous code is Shift-JIS. 
+There is a problem of compatibility of the log charactor code.
+
+## Countermeasure
+
+Use by nkf (Nihongo Kanji Filter).
+
+```
+> nkf -Lu old.log > new.log
+```
 ![みさわ](http://jigokuno.img.jugem.jp/20090928_1487687.gif)
 
 # Lisence
