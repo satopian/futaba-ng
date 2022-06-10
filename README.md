@@ -24,7 +24,6 @@ Is script used in http://www.2chan.net/.
 This script aims running with PHP 5.4.15 or later...
 
 # How to running
-
 - PHP 5.4.15 or later
 
 ![みさわ](http://jigokuno.img.jugem.jp/20090928_1487687.gif)
