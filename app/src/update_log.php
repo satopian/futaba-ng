@@ -163,7 +163,7 @@ function updatelog($resno=0){
 
     $dat.='<table align=right><tr><td nowrap align=center>
 <input type=hidden name=mode value=usrdel>【記事削除】[<input type=checkbox name=onlyimgdel value=on>画像だけ消す]<br>
-削除キー<input type=password name=pwd size=8 maxlength=8 value="">
+削除キー<input type=password name=pwd size=8 value="">
 <input type=submit value="削除"></form></td></tr></table>';
 
     if(!$resno){ //res時は表示しない

@@ -81,7 +81,7 @@ function form(&$dat,$resno,$admin=""){
   }
 
   $dat.='<table cellpadding=1 cellspacing=1>
-  <tr><td bgcolor=#eeaa88><b>おなまえ</b></td><td><input type=text name=name size="28"></td></tr>
+  <tr><td bgcolor=#eeaa88><b>おなまえ</b></td><td><input type=text name=name size="28" autocomplete="username"></td></tr>
   <tr><td bgcolor=#eeaa88><b>E-mail</b></td><td><input type=text name=email size="28"></td></tr>
   <tr><td bgcolor=#eeaa88><b>題　　名</b></td><td><input type=text name=sub size="35">
   <input type=submit value="送信する"></td></tr>
@@ -94,7 +94,7 @@ function form(&$dat,$resno,$admin=""){
     [<label><input type=checkbox name=textonly value=on>画像なし</label>]</td></tr>';
   }
 
-  $dat.='<tr><td bgcolor=#eeaa88><b>削除キー</b></td><td><input type=password name=pwd size=8 maxlength=8 value=""><small>(記事の削除用。英数字で8文字以内)</small></td></tr>
+  $dat.='<tr><td bgcolor=#eeaa88><b>削除キー</b></td><td><input type=password name=pwd size=8 value=""><small>(記事の削除用)</small></td></tr>
   <tr><td colspan=2>
   <small>
   <LI>添付可能ファイル：GIF, JPG, PNG ブラウザによっては正常に添付できないことがあります。
@@ -269,7 +269,7 @@ function updatelog($resno=0){
 
     $dat.='<table align=right><tr><td nowrap align=center>
 <input type=hidden name=mode value=usrdel>【記事削除】[<input type=checkbox name=onlyimgdel value=on>画像だけ消す]<br>
-削除キー<input type=password name=pwd size=8 maxlength=8 value="">
+削除キー<input type=password name=pwd size=8 value="">
 <input type=submit value="削除"></form></td></tr></table>';
 
     if(!$resno){ //res時は表示しない
@@ -586,7 +586,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   }
 
   // No.とパスと時間とURLフォーマット
-  srand((double)microtime()*1000000);
+  srand();
   if($pwd==""){
     if($pwdc==""){
       $pwd=rand();$pwd=substr($pwd,0,8);

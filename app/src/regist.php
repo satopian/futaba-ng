@@ -157,7 +157,7 @@ function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto
   }
 
   // No.とパスと時間とURLフォーマット
-  srand((double)microtime()*1000000);
+  srand();
   if($pwd==""){
     if($pwdc==""){
       $pwd=rand();$pwd=substr($pwd,0,8);
