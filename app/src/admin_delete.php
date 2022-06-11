@@ -15,7 +15,7 @@ function admindel($pass){
   reset($_POST);
 
   foreach($_POST as $key=>$val){
-	if($_POST[$key]==='delete'){
+	if($val==='delete'){
 		array_push($delno,$key);
 		$delflag=true;
 	}

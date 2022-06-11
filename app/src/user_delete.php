@@ -13,7 +13,7 @@ function usrdel($no,$pwd){
   $delflag = false;
   reset($_POST);
   foreach($_POST as $key=>$val){
-	if($_POST[$key]==='delete'){
+	if($val==='delete'){
 		array_push($delno,$key);
 		$delflag=true;
 	}
