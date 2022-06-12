@@ -84,7 +84,7 @@ function updatelog($resno=0){
     }
 
     // メイン作成
-    $dat.="<input type=checkbox name=\"$no\" value=delete><font color=#cc1105 size=+1><b>$sub</b></font> \n";
+    $dat.="<input type=checkbox name=\"del[]\" value=\"$no\"><font color=#cc1105 size=+1><b>$sub</b></font> \n";
     $dat.="Name <font color=#117743><b>$name</b></font> $now No.$no &nbsp; \n";
     if(!$resno) $dat.="[<a href=".PHP_SELF."?res=$no>返信</a>]";
     $dat.="\n<blockquote>$com</blockquote>";
