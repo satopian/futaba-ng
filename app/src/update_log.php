@@ -37,6 +37,8 @@ function updatelog($resno=0){
     $dat.='<form action="'.PHP_SELF.'" method=POST>';
 
   for($i = $st; $i < $st+PAGE_DEF; $i++){
+	ob_start();
+
     if(!isset($tree[$i])){
       continue;
     }
@@ -64,24 +66,21 @@ function updatelog($resno=0){
     $src = IMG_DIR.$time.$ext;
     // <imgタグ作成
     $imgsrc = "";
-    if($ext && is_file($img)){
-      $size = filesize($img);//altにサイズ表示
-      if($w && $h){//サイズがある時
-        if(@is_file(THUMB_DIR.$time.'s.jpg')){
+	?>
+    <?php if($ext && is_file($img)):?>
+      <?php $size = filesize($img);//altにサイズ表示?>
+      <?php if($w && $h):?><!-- サイズがある時 -->
+		
+        <?php if(@is_file(THUMB_DIR.$time.'s.jpg')):?>
           $imgsrc = "<small>サムネイルを表示しています.クリックすると元のサイズを表示します.</small><br><a href=\"".$src."\" target=_blank><img src=".THUMB_DIR.$time.'s.jpg'.
       " border=0 align=left width=$w height=$h hspace=20 alt=\"".$size." B\"></a>";
-        }
-        else{
+        <?php else:?>
           $imgsrc = "<a href=\"".$src."\" target=_blank><img src=".$src.
       " border=0 align=left width=$w height=$h hspace=20 alt=\"".$size." B\"></a>";
-        }
-      }
-      else{//それ以外
-        $imgsrc = "<a href=\"".$src."\" target=_blank><img src=".$src.
-      " border=0 align=left hspace=20 alt=\"".$size." B\"></a>";
-      }
+      <?php endif;?>
+      <?php endif;?>
       $dat.="画像タイトル：<a href=\"$src\" target=_blank>$time$ext</a>-($size B)<br>$imgsrc";
-    }
+    <?php endif;?>
 
     // メイン作成
     $dat.="<input type=checkbox name=\"del[]\" value=\"$no\"><font color=#cc1105 size=+1><b>$sub</b></font> \n";
@@ -108,60 +107,68 @@ function updatelog($resno=0){
     else{
       $s=1;
     }
-
+<?php
     for($k = $s; $k < count($treeline); $k++){
-      $disptree = $treeline[$k];
-      $j=$lineindex[$disptree] ;
-      if(!trim($line[$j])){
-        continue;
-      }
-      list($no,$now,$name,$email,$sub,$com,$url,
-           $host,$pwd,$ext,$w,$h,$time,$chk) = explode(",", $line[$j]);
-      // URLとメールにリンク
-      if($email) $name = "<a href=\"mailto:$email\">$name</a>";
-      $com = auto_link($com);
-      $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com);
+		$disptree = $treeline[$k];
+		$j=$lineindex[$disptree] ;
+		if(!trim($line[$j])){
+		  continue;
+		}
+		list($no,$now,$name,$email,$sub,$com,$url,
+			 $host,$pwd,$ext,$w,$h,$time,$chk) = explode(",", $line[$j]);
+		// URLとメールにリンク
+		if($email) $name = "<a href=\"mailto:$email\">$name</a>";
+		$com = auto_link($com);
+		$com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com);
+  
+		// 画像ファイル名
+		$img = $path.$time.$ext;
+		$src = IMG_DIR.$time.$ext;
+		// <imgタグ作成
+		$imgsrc = "";
+		?>
+		<?php if($ext && is_file($img)):?>
+		  $size = filesize($img);//altにサイズ表示
+		  if($w && $h){//サイズがある時
+			if(@is_file(THUMB_DIR.$time.'s.jpg')){
+			  $imgsrc = "<small>サムネイル表示</small><br><a href=\"".$src."\" target=_blank><img src=".THUMB_DIR.$time.'s.jpg'.
+		  " border=0 align=left width=$w height=$h hspace=20 alt=\"".$size." B\"></a>";
+			}
+			else{
+			  $imgsrc = "<a href=\"".$src."\" target=_blank><img src=".$src.
+		  " border=0 align=left width=$w height=$h hspace=20 alt=\"".$size." B\"></a>";
+			}
+		  }
+		  else{//それ以外
+			$imgsrc = "<a href=\"".$src."\" target=_blank><img src=".$src.
+		  " border=0 align=left hspace=20 alt=\"".$size." B\"></a>";
+		  }
+		  $imgsrc="<br> &nbsp; &nbsp; <a href=\"$src\" target=_blank>$time$ext</a>-($size B) $imgsrc";
+		<?php endif;?>
+  
+		  // メイン作成
+		  $dat.="<table border=0><tr><td nowrap align=right valign=top>…</td><td bgcolor=#F0E0D6 nowrap>\n";
+		  $dat.="<input type=checkbox name=\"$no\" value=delete><font color=#cc1105 size=+1><b>$sub</b></font> \n";
+		  $dat.="Name <font color=#117743><b>$name</b></font> $now No.$no &nbsp; \n";
+		  $dat.="$imgsrc<blockquote>$com</blockquote>";
+		  $dat.="</td></tr></table>\n";
+		<?php  
+		}
+		?>
+		<!-- //ここまで -->
+		$dat.="<br clear=left><hr>\n";
+		clearstatcache();//ファイルのstatをクリア
+		$p++;
+	
+	<?php
+		if($resno){
+		  break;
+		} //res時はtree1行だけ
+		$dat.= ob_get_clean();
+  
+	}
 
-      // 画像ファイル名
-      $img = $path.$time.$ext;
-      $src = IMG_DIR.$time.$ext;
-      // <imgタグ作成
-      $imgsrc = "";
-      if($ext && is_file($img)){
-        $size = filesize($img);//altにサイズ表示
-        if($w && $h){//サイズがある時
-          if(@is_file(THUMB_DIR.$time.'s.jpg')){
-            $imgsrc = "<small>サムネイル表示</small><br><a href=\"".$src."\" target=_blank><img src=".THUMB_DIR.$time.'s.jpg'.
-        " border=0 align=left width=$w height=$h hspace=20 alt=\"".$size." B\"></a>";
-          }
-          else{
-            $imgsrc = "<a href=\"".$src."\" target=_blank><img src=".$src.
-        " border=0 align=left width=$w height=$h hspace=20 alt=\"".$size." B\"></a>";
-          }
-        }
-        else{//それ以外
-          $imgsrc = "<a href=\"".$src."\" target=_blank><img src=".$src.
-        " border=0 align=left hspace=20 alt=\"".$size." B\"></a>";
-        }
-        $imgsrc="<br> &nbsp; &nbsp; <a href=\"$src\" target=_blank>$time$ext</a>-($size B) $imgsrc";
-      }
-
-        // メイン作成
-        $dat.="<table border=0><tr><td nowrap align=right valign=top>…</td><td bgcolor=#F0E0D6 nowrap>\n";
-        $dat.="<input type=checkbox name=\"$no\" value=delete><font color=#cc1105 size=+1><b>$sub</b></font> \n";
-        $dat.="Name <font color=#117743><b>$name</b></font> $now No.$no &nbsp; \n";
-        $dat.="$imgsrc<blockquote>$com</blockquote>";
-        $dat.="</td></tr></table>\n";
-      }
-      $dat.="<br clear=left><hr>\n";
-      clearstatcache();//ファイルのstatをクリア
-      $p++;
-      if($resno){
-        break;
-      } //res時はtree1行だけ
-    }
-
-    $dat.='<table align=right><tr><td nowrap align=center>
+$dat.='<table align=right><tr><td nowrap align=center>
 <input type=hidden name=mode value=usrdel>【記事削除】[<input type=checkbox name=onlyimgdel value=on>画像だけ消す]<br>
 削除キー<input type=password name=pwd size=8 value="">
 <input type=submit value="削除"></form></td></tr></table>';
@@ -214,9 +221,10 @@ function updatelog($resno=0){
     }
     
     foot($dat);
-    if($resno){
+    // if($resno){
       echo $dat;break;
-    }
+    // }
+	exit;
     if($page==0){
       $logfilename=PHP_SELF2;
     }
