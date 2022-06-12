@@ -68,50 +68,49 @@ function form(&$dat,$resno,$admin=""){
 
   $maxbyte = MAX_KB * 1024;
   $no=$resno;
+	ob_start();
+?>
 
-  if($resno){
-    $msg .= "[<a href=\"".PHP_SELF2."\">掲示板に戻る</a>]\n";
-    $msg .= "<table width='100%'><tr><th bgcolor=#e04000>\n";
-    $msg .= "<font color=#FFFFFF>レス送信モード</font>\n";
-    $msg .= "</th></tr></table>\n";
-  }
-  if($admin){
-    $hidden = "<input type=hidden name=admin value=\"".ADMIN_PASS."\">";
-    $msg = "<h4>タグがつかえます</h4>";
-  }
+  <?php if($resno):?>
+    [<a href="<?=h(PHP_SELF2)?>">掲示板に戻る</a>];
+    <table width='100%'><tr><th bgcolor=#e04000>
+    <font color=#FFFFFF>レス送信モード</font>
+    </th></tr></table>
+  <?php endif;?>
 
-  $dat.=$msg.'<center>
-<form action="'.PHP_SELF.'" method="POST" enctype="multipart/form-data">
-<input type=hidden name=mode value="regist">
-'.$hidden.'
-<input type=hidden name="MAX_FILE_SIZE" value="'.$maxbyte.'">
-';
+  <center>
+<form action="<?=h(PHP_SELF)?>" method="POST" enctype="multipart/form-data">
+<input type="hidden" name="mode" value="regist">
+<input type=hidden name="MAX_FILE_SIZE" value="<?=h($maxbyte)?>">
 
-  if($no){
-    $dat.='<input type=hidden name=resto value="'.$no.'">';
-  }
 
-  $dat.='<table cellpadding=1 cellspacing=1>
-  <tr><td bgcolor=#eeaa88><b>おなまえ</b></td><td><input type=text name=name size="28" autocomplete="username"></td></tr>
-  <tr><td bgcolor=#eeaa88><b>E-mail</b></td><td><input type=text name=email size="28"></td></tr>
-  <tr><td bgcolor=#eeaa88><b>題　　名</b></td><td><input type=text name=sub size="35">
+<?php if($no):?>
+    <input type=hidden name=resto value="<?=h($no)?>">
+<?php endif;?>
+
+  <table cellpadding=1 cellspacing=1>
+  <tr><td bgcolor=#eeaa88><b>おなまえ</b></td><td><input type=text name="name" size="28" autocomplete="username"></td></tr>
+  <tr><td bgcolor=#eeaa88><b>E-mail</b></td><td><input type=text name="email" size="28"></td></tr>
+  <tr><td bgcolor=#eeaa88><b>題　　名</b></td><td><input type=text name="sub" size="35">
   <input type=submit value="送信する"></td></tr>
   <tr><td bgcolor=#eeaa88><b>コメント</b></td><td><textarea name=com cols="48" rows="4" wrap=soft></textarea></td></tr>
-  ';
 
-  if(RESIMG || !$resno){
-    $dat.='<tr><td bgcolor=#eeaa88><b>添付File</b></td>
+  <?php if(RESIMG || !$resno):?>
+    <tr><td bgcolor=#eeaa88><b>添付File</b></td>
     <td><input type=file name=upfile size="35">
-    [<label><input type=checkbox name=textonly value=on>画像なし</label>]</td></tr>';
-  }
+    [<label><input type=checkbox name=textonly value=on>画像なし</label>]</td></tr>
+  <?php endif;?>
 
-  $dat.='<tr><td bgcolor=#eeaa88><b>削除キー</b></td><td><input type=password name=pwd size=8 value=""><small>(記事の削除用)</small></td></tr>
+  <tr><td bgcolor=#eeaa88><b>削除キー</b></td><td><input type=password name=pwd size=8 value=""><small>(記事の削除用)</small></td></tr>
   <tr><td colspan=2>
   <small>
   <LI>添付可能ファイル：GIF, JPG, PNG ブラウザによっては正常に添付できないことがあります。
   <LI>最大投稿データ量は '.MAX_KB.' KB までです。sage機能付き。
   <LI>画像は横 '.MAX_W.'ピクセル、縦 '.MAX_H.'ピクセルを超えると縮小表示されます。
-  '.$addinfo.'</small></td></tr></table></form></center><hr>';
+  <?=h($addinfo)?></small></td></tr></table></form></center><hr>
+<?php
+	$dat.= ob_get_clean();
+
 }
 ?>
 
@@ -364,7 +363,8 @@ function updatelog($resno=0){
  * @return void
  */
 function foot(&$dat){
-  $dat.='
+  ob_start();
+  ?>
 <center>
 <small><!-- GazouBBS v3.0 --><!-- ふたば改0.8 -->
 - <a href="http://php.s3.to" target=_top>GazouBBS</a> + <a href="http://www.2chan.net/" target=_top>futaba</a>-
@@ -373,7 +373,9 @@ function foot(&$dat){
 <script>
  l(); //LoadCookie
 </script>
-</body></html>';
+</body></html>
+<?php
+  $dat.= ob_get_clean();
 }
 ?>
 
@@ -409,12 +411,17 @@ function error($mes,$dest=''){
   }
 
   head($dat);
+  ob_start();
+?>
+  <br><br><hr size="1"><br><br>
+        <center><font color=red size=5><b><?=h($mes)?><br><br><a href=<?=h(PHP_SELF2)?>>リロード</a></b></font></center>
+        <br><br><hr size=1>"
+  </body></html>
 
+<?php
+  $dat.= ob_get_clean();
   echo $dat;
-  echo "<br><br><hr size=1><br><br>
-        <center><font color=red size=5><b>$mes<br><br><a href=".PHP_SELF2.">リロード</a></b></font></center>
-        <br><br><hr size=1>";
-  die("</body></html>");
+exit;
 }
 ?>
 
@@ -541,9 +548,10 @@ function regist($resto=0){
   if(!$comment&&!is_file($dest)){
     error("何か書いて下さい",$dest);
   }
-
-  $name=preg_replace("/管理/","\"管理\"",$name);
-  $name=preg_replace("/削除/","\"削除\"",$name);
+	if($pwd!==ADMIN_PASS){
+	$name=preg_replace("/管理/","\"管理\"",$name);
+	$name=preg_replace("/削除/","\"削除\"",$name);
+	}
 
   if(strlen($comment) > 1000){
     error("本文が長すぎますっ！",$dest);
@@ -1159,7 +1167,9 @@ function admindel($pass){
  * @return void
  */
 function head(&$dat){
-  $dat.='<html><head>
+	ob_start();
+?>
+<html><head>
 <meta charset="UTF-8"/>
 <!-- meta HTTP-EQUIV="pragma" CONTENT="no-cache" -->
 <STYLE TYPE="text/css">
@@ -1170,21 +1180,22 @@ span { font-size:20pt }
 small { font-size:10pt }
 -->
 </STYLE>
-<title>'.TITLE.'</title>
+<title><?=h(TITLE)?></title>
 <script>
 function l(){var b=loadCookie("pwdc"),d=loadCookie("namec"),c=loadCookie("emailc"),h=loadCookie("urlc"),a;for(a=0;a<document.forms.length;a++)document.forms[a].pwd&&(document.forms[a].pwd.value=b),document.forms[a].name&&(document.forms[a].name.value=d),document.forms[a].email&&(document.forms[a].email.value=c),document.forms[a].url&&(document.forms[a].url.value=h)}
 function loadCookie(b){var d=document.cookie;if(""==d)return"";var c=d.indexOf(b+"=");if(-1==c)return"";c+=b.length+1;b=d.indexOf(";",c);-1==b&&(b=d.length);return decodeURIComponent(d.substring(c,b))};
 </script>
 </head>
 <body bgcolor="#FFFFEE" text="#800000" link="#0000EE" vlink="#0000EE">
-<p align=right>
-[<a href="'.HOME.'" target="_top">ホーム</a>]
-[<a href="'.PHP_SELF.'?mode=admin">管理用</a>]
-<p align=center>
+<p align="right">
+[<a href="<?=h(HOME)?>" target="_top">ホーム</a>]
+[<a href="<?=h(PHP_SELF)?>?mode=admin">管理用</a>]
+<p align="center">
 <font color="#800000" size=5>
-<b><SPAN>'.TITLE.'</SPAN></b></font>
-<hr width="90%" size=1>
-';
+<b><SPAN><?=h(TITLE)?></SPAN></b></font>
+<hr width="90%" size="1">
+<?php
+	$dat.= ob_get_clean();
 }
 ?>
 
@@ -1204,6 +1215,11 @@ function CleanStr($message){
 }
 ?>
 
+<?php
+function h($str){//出力のエスケープ
+	return htmlspecialchars((string)$str,ENT_QUOTES,'utf-8',false);
+}
+?>
 <?php
 //逆変換テーブル作成
 function get_lineindex ($line){

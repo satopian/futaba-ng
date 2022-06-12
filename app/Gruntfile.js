@@ -49,6 +49,7 @@ module.exports = function(grunt) {
           'src/admin_delete.php',
           'src/head.php',
           'src/clean_str.php',
+          'src/h.php',
           'src/get_lineindex.php',
           'src/init.php',
           'src/main.php'

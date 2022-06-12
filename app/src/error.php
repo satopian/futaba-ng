@@ -14,11 +14,16 @@ function error($mes,$dest=''){
   }
 
   head($dat);
+  ob_start();
+?>
+  <br><br><hr size="1"><br><br>
+        <center><font color=red size=5><b><?=h($mes)?><br><br><a href=<?=h(PHP_SELF2)?>>リロード</a></b></font></center>
+        <br><br><hr size=1>"
+  </body></html>
 
+<?php
+  $dat.= ob_get_clean();
   echo $dat;
-  echo "<br><br><hr size=1><br><br>
-        <center><font color=red size=5><b>$mes<br><br><a href=".PHP_SELF2.">リロード</a></b></font></center>
-        <br><br><hr size=1>";
-  die("</body></html>");
+exit;
 }
 ?>

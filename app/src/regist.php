@@ -101,9 +101,11 @@ function regist($resto=0){
   if(!$comment&&!is_file($dest)){
     error("何か書いて下さい",$dest);
   }
+  if($pwd!==ADMIN_PASS){
+	$name=preg_replace("/管理/","\"管理\"",$name);
+	$name=preg_replace("/削除/","\"削除\"",$name);
+  }
 
-  $name=preg_replace("/管理/","\"管理\"",$name);
-  $name=preg_replace("/削除/","\"削除\"",$name);
 
   if(strlen($comment) > 1000){
     error("本文が長すぎますっ！",$dest);
