@@ -72,7 +72,7 @@ function form(&$dat,$resno,$admin=""){
 ?>
 
   <?php if($resno):?>
-    [<a href="<?=h(PHP_SELF2)?>">掲示板に戻る</a>];
+    [<a href="<?=h(PHP_SELF2)?>">掲示板に戻る</a>]
     <table width='100%'><tr><th bgcolor=#e04000>
     <font color=#FFFFFF>レス送信モード</font>
     </th></tr></table>
