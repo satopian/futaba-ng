@@ -69,7 +69,7 @@ function regist($resto=0){
     $H = $desired_size['height'];
     $extension = ExtensionRepository::find($size[2]);
 
-    $mes = "画像 $upfile_name のアップロードが成功しました<br><br>";
+    $mes = "画像 $upfile_name のアップロードが成功しました";
   }
 
   foreach($badstring as $value){
@@ -357,8 +357,9 @@ function regist($resto=0){
     if(USE_THUMB){thumb($path,$tim,$extension,MAX_W,MAX_H);}
   }
   updatelog();
-
-  echo "<html><head><meta charset=\"UTF-8\"><meta http-equiv=\"refresh\" content=\"1;URL=".PHP_SELF2."\"></head>";
-  echo "<body>$mes 画面を切り替えます</body></html>";
+?>
+  <html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="1;URL="<?=h(PHP_SELF2)?>"></head>;
+  <body><?php if($mes):?><?=h($mes)?><br><br><?php endif;?>画面を切り替えます</body></html>
+<?php
 }
 ?>

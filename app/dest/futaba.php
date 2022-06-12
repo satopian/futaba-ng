@@ -153,6 +153,8 @@ function updatelog($resno=0){
     $dat.='<form action="'.PHP_SELF.'" method=POST>';
 
   for($i = $st; $i < $st+PAGE_DEF; $i++){
+	ob_start();
+
     if(!isset($tree[$i])){
       continue;
     }
@@ -170,6 +172,7 @@ function updatelog($resno=0){
     list($no,$now,$name,$email,$sub,$com,$url,
          $host,$pwd,$ext,$w,$h,$time,$chk) = explode(",", $line[$j]);
     // URLとメールにリンク
+	$email=filter_var($email,FILTER_VALIDATE_EMAIL)?$email:'';
     if($email){
       $name = "<a href=\"mailto:$email\">$name</a>";
     }
@@ -180,36 +183,33 @@ function updatelog($resno=0){
     $src = IMG_DIR.$time.$ext;
     // <imgタグ作成
     $imgsrc = "";
-    if($ext && is_file($img)){
-      $size = filesize($img);//altにサイズ表示
-      if($w && $h){//サイズがある時
-        if(@is_file(THUMB_DIR.$time.'s.jpg')){
-          $imgsrc = "<small>サムネイルを表示しています.クリックすると元のサイズを表示します.</small><br><a href=\"".$src."\" target=_blank><img src=".THUMB_DIR.$time.'s.jpg'.
-      " border=0 align=left width=$w height=$h hspace=20 alt=\"".$size." B\"></a>";
-        }
-        else{
-          $imgsrc = "<a href=\"".$src."\" target=_blank><img src=".$src.
-      " border=0 align=left width=$w height=$h hspace=20 alt=\"".$size." B\"></a>";
-        }
-      }
-      else{//それ以外
-        $imgsrc = "<a href=\"".$src."\" target=_blank><img src=".$src.
-      " border=0 align=left hspace=20 alt=\"".$size." B\"></a>";
-      }
-      $dat.="画像タイトル：<a href=\"$src\" target=_blank>$time$ext</a>-($size B)<br>$imgsrc";
-    }
+	?>
+    <?php if($ext && is_file($img)):?>
+      <?php $size = filesize($img);//altにサイズ表示?>
+      画像タイトル：<a href="<?=h($src)?>" target=_blank><?=h($time.$ext)?></a>-(<?h($size)?> B)<br>
+	  <?php if($w && $h):?><!-- サイズがある時 -->
+		
+        <?php if(@is_file(THUMB_DIR.$time.'s.jpg')):?>
+          <small>サムネイルを表示しています.クリックすると元のサイズを表示します.</small><br><a href="<?=h($src)?>" target=_blank><img src="<?=h(THUMB_DIR.$time.'s.jpg')?>" border=0 align=left width="<?=h($w)?>" height="<?=h($h)?>" hspace=20 alt="<?=h($size)?> B"></a>
+        <?php else:?>
+          <a href="<?=h($src)?>" target=_blank><img src="<?=h($src)?>
+      " border="0" align="left" width="<?=h($w)?>" height="<?=h($h)?>" hspace="20" alt="<?=h($size)?> B"></a>";
+      <?php endif;?>
+      <?php endif;?>
 
-    // メイン作成
-    $dat.="<input type=checkbox name=\"del[]\" value=\"$no\"><font color=#cc1105 size=+1><b>$sub</b></font> \n";
-    $dat.="Name <font color=#117743><b>$name</b></font> $now No.$no &nbsp; \n";
-    if(!$resno) $dat.="[<a href=".PHP_SELF."?res=$no>返信</a>]";
-    $dat.="\n<blockquote>$com</blockquote>";
+    <?php endif;?>
 
-     // そろそろ消える。
-     if($lineindex[$no] >= LOG_MAX*0.95){
-      $dat.="<font color=\"#f00000\"><b>このスレは古いので、もうすぐ消えます。</b></font><br>\n";
-     }
+    <!-- // メイン作成 -->
+    <input type=checkbox name="del[]" value="<?=h($no)?>"><font color=#cc1105 size=+1><b><?=h($sub)?></b></font>
+    <font color=#117743><b><?=h($name)?></b></font> <?=h($now)?> No.<?=h($no)?> &nbsp;
+    <?php if(!$resno):?> [<a href="<?=PHP_SELF?>?res=<?=h($no)?>">返信</a>]<?php endif;?>
+    <blockquote><?=h($com)?></blockquote>
 
+     <!-- // そろそろ消える。 -->
+     <?php if($lineindex[$no] >= LOG_MAX*0.95):?>
+      <font color="#f00000"><b>このスレは古いので、もうすぐ消えます。</b></font><br>
+     <?php endif;?>
+<?php
     //レス作成
     if(!$resno){
       $s=count($treeline) - 10;
@@ -217,69 +217,76 @@ function updatelog($resno=0){
         $s=1;
       }
       elseif($s>1){
-       $dat.="<font color=\"#707070\">レス".
-              ($s - 1)."件省略。全て読むには返信ボタンを押してください。</font><br>\n";
-      }
+		?>
+       <font color="#707070">レス
+              (<?=h($s - 1)?>)?>件省略。全て読むには返信ボタンを押してください。</font><br>\n";
+      <?php
+		}
     }
     else{
       $s=1;
     }
 
     for($k = $s; $k < count($treeline); $k++){
-      $disptree = $treeline[$k];
-      $j=$lineindex[$disptree] ;
-      if(!trim($line[$j])){
-        continue;
-      }
-      list($no,$now,$name,$email,$sub,$com,$url,
-           $host,$pwd,$ext,$w,$h,$time,$chk) = explode(",", $line[$j]);
-      // URLとメールにリンク
-      if($email) $name = "<a href=\"mailto:$email\">$name</a>";
-      $com = auto_link($com);
-      $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com);
+		$disptree = $treeline[$k];
+		$j=$lineindex[$disptree] ;
+		if(!trim($line[$j])){
+		  continue;
+		}
+		list($no,$now,$name,$email,$sub,$com,$url,
+			 $host,$pwd,$ext,$w,$h,$time,$chk) = explode(",", $line[$j]);
+		// URLとメールにリンク
+		$email=filter_var($email,FILTER_VALIDATE_EMAIL)?$email:'';
+		if($email) $name = "<a href=\"mailto:$email\">$name</a>";
+		$com = auto_link($com);
+		$com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com);
+  
+		// 画像ファイル名
+		$img = $path.$time.$ext;
+		$src = IMG_DIR.$time.$ext;
+		?>
+  
+		  <!-- メイン作成 -->
+		  <table border="0"><tr><td nowrap align="right" valign=top>…</td><td bgcolor=#F0E0D6 nowrap>
+		  <input type=checkbox name="<?=h($no)?>" value="delete"><font color=#cc1105 "size=+1"><b><?=h($sub)?></b></font>
+		  Name <font color="#117743"><b><?=h($name)?></b></font> <?=h($now)?> No.<?=h($no)?> &nbsp;
+		  <?php if($ext && is_file($img)):?>
+		  <?php $size = filesize($img);//altにサイズ表示?>
+		  <?php if($w && $h):?>	<!-- サイズがある時 -->
+		  <br> &nbsp; &nbsp; <a href="<?=h($src)?>" target=_blank><?=h($time.$ext)?></a>-(<?=h($size)?> B)
+		  <?php if(is_file(THUMB_DIR.$time.'s.jpg')):?>
+			  <small>サムネイル表示</small><br><a href=<?=h($src)?>" target=_blank><img src="<?=h(THUMB_DIR.$time.'s.jpg')?>
+		  " border="0" align=left width="<?=h($w)?>" height="<?=h($h)?>" hspace="20" alt="<?=h($size)?> B"></a>
+			<?php else:?>
+			  <a href="<?=h($src)?>" target=_blank><img src="<?=h($src)?>
+		  " border="0" align="left" width="<?=h($w)?>" height=<?=h($h)?> hspace="20" alt="<?=h($size)?> B"></a>
+		<?php endif;?>
+		<?php endif;?>
+		<?php endif;?>
+		 
+		 <blockquote><?=h($com)?></blockquote>
+		  </td></tr></table>
+		<?php  
+		}
+		?>
+		<!-- //ここまで -->
+		<br clear=left><hr>
+		<?php
+		clearstatcache();//ファイルのstatをクリア
+		$p++;
+		?>
+	
+	<?php
+		$dat.= ob_get_clean();
+		if($resno){
+		  break;
+		} //res時はtree1行だけ
+		
+	}
 
-      // 画像ファイル名
-      $img = $path.$time.$ext;
-      $src = IMG_DIR.$time.$ext;
-      // <imgタグ作成
-      $imgsrc = "";
-      if($ext && is_file($img)){
-        $size = filesize($img);//altにサイズ表示
-        if($w && $h){//サイズがある時
-          if(@is_file(THUMB_DIR.$time.'s.jpg')){
-            $imgsrc = "<small>サムネイル表示</small><br><a href=\"".$src."\" target=_blank><img src=".THUMB_DIR.$time.'s.jpg'.
-        " border=0 align=left width=$w height=$h hspace=20 alt=\"".$size." B\"></a>";
-          }
-          else{
-            $imgsrc = "<a href=\"".$src."\" target=_blank><img src=".$src.
-        " border=0 align=left width=$w height=$h hspace=20 alt=\"".$size." B\"></a>";
-          }
-        }
-        else{//それ以外
-          $imgsrc = "<a href=\"".$src."\" target=_blank><img src=".$src.
-        " border=0 align=left hspace=20 alt=\"".$size." B\"></a>";
-        }
-        $imgsrc="<br> &nbsp; &nbsp; <a href=\"$src\" target=_blank>$time$ext</a>-($size B) $imgsrc";
-      }
-
-        // メイン作成
-        $dat.="<table border=0><tr><td nowrap align=right valign=top>…</td><td bgcolor=#F0E0D6 nowrap>\n";
-        $dat.="<input type=checkbox name=\"$no\" value=delete><font color=#cc1105 size=+1><b>$sub</b></font> \n";
-        $dat.="Name <font color=#117743><b>$name</b></font> $now No.$no &nbsp; \n";
-        $dat.="$imgsrc<blockquote>$com</blockquote>";
-        $dat.="</td></tr></table>\n";
-      }
-      $dat.="<br clear=left><hr>\n";
-      clearstatcache();//ファイルのstatをクリア
-      $p++;
-      if($resno){
-        break;
-      } //res時はtree1行だけ
-    }
-
-    $dat.='<table align=right><tr><td nowrap align=center>
+$dat.='<table align=right><tr><td nowrap align=center>
 <input type=hidden name=mode value=usrdel>【記事削除】[<input type=checkbox name=onlyimgdel value=on>画像だけ消す]<br>
-削除キー<input type=password name=pwd size=8 value="">
+削除キー<input type=password name=pwd size="8" value="">
 <input type=submit value="削除"></form></td></tr></table>';
 
     if(!$resno){ //res時は表示しない
@@ -516,7 +523,7 @@ function regist($resto=0){
     $H = $desired_size['height'];
     $extension = ExtensionRepository::find($size[2]);
 
-    $mes = "画像 $upfile_name のアップロードが成功しました<br><br>";
+    $mes = "画像 $upfile_name のアップロードが成功しました";
   }
 
   foreach($badstring as $value){
@@ -804,9 +811,10 @@ function regist($resto=0){
     if(USE_THUMB){thumb($path,$tim,$extension,MAX_W,MAX_H);}
   }
   updatelog();
-
-  echo "<html><head><meta charset=\"UTF-8\"><meta http-equiv=\"refresh\" content=\"1;URL=".PHP_SELF2."\"></head>";
-  echo "<body>$mes 画面を切り替えます</body></html>";
+?>
+  <html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="1;URL="<?=h(PHP_SELF2)?>"></head>;
+  <body><?php if($mes):?><?=h($mes)?><br><br><?php endif;?>画面を切り替えます</body></html>
+<?php
 }
 ?>
 
@@ -1120,6 +1128,7 @@ function admindel($pass){
 	  if(strlen($sub) > 10){
 		$sub = substr($sub,0,9).".";
 	  }
+	  $email=filter_var($email,FILTER_VALIDATE_EMAIL)?$email:'';
 	  if($email){ 
 		$name="<a href=\"mailto:$email\">$name</a>";
 	  }

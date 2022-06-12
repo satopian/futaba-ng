@@ -102,6 +102,7 @@ function admindel($pass){
 	  if(strlen($sub) > 10){
 		$sub = substr($sub,0,9).".";
 	  }
+	  $email=filter_var($email,FILTER_VALIDATE_EMAIL)?$email:'';
 	  if($email){ 
 		$name="<a href=\"mailto:$email\">$name</a>";
 	  }
