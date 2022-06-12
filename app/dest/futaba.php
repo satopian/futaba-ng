@@ -1196,19 +1196,11 @@ function loadCookie(b){var d=document.cookie;if(""==d)return"";var c=d.indexOf(b
  * @return string Finished special charactor the replacement.
  */
 function CleanStr($message){
-  global $admin;
-  $trimed_message = trim($message);//先頭と末尾の空白除去
-  $strip_slashed_message = $trimed_message;
+  $message = trim($message);//先頭と末尾の空白除去
 
-  if($admin != ADMIN_PASS){//管理者はタグ可能
-    $trimed_tag_message = htmlspecialchars($strip_slashed_message);//タグっ禁止
-    $replace_ampersand_message = str_replace("&amp;", "&", $trimed_tag_message);//特殊文字
-    $replace_comma_message = str_replace(",", "&#44;", $replace_ampersand_message);//カンマを変換
-    return $replace_ampersand_message;
-  }
-  else{
-    return str_replace(",", "&#44;", $strip_slashed_message);//カンマを変換
-  }
+  $message = htmlspecialchars((string)$message,ENT_QUOTES,'utf-8');
+  $message = str_replace(",", "&#44;", $message);//カンマを変換
+  return $message;
 }
 ?>
 
