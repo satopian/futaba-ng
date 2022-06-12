@@ -9,7 +9,7 @@ foreach($iniv as $iniva){
 
 switch($mode){
   case 'regist':
-    regist($name,$email,$sub,$com,'',$pwd,$upfile,$upfile_name,$resto);
+    regist($resto);
     break;
   case 'admin':
     valid($pass);

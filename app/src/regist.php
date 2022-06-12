@@ -13,9 +13,18 @@
  * @params string $resto thread target number.
  * @return void
  */
-function regist($name,$email,$sub,$comment,$url,$pwd,$upfile,$upfile_name,$resto){
+function regist($resto=0){
   global $path,$badstring,$badfile,$badip,$pwdc,$textonly;
   $dest="";$mes="";
+  $name = (string)filter_input(INPUT_POST, 'name');
+  $email = (string)filter_input(INPUT_POST, 'email');
+  $sub = (string)filter_input(INPUT_POST, 'sub');
+  $pwd = (string)(filter_input(INPUT_POST, 'pwd'));
+  $textonly = (string)(filter_input(INPUT_POST, 'textonly',FILTER_VALIDATE_BOOLEAN));
+  $url = '';
+  $comment = (string)filter_input(INPUT_POST, 'com');
+  $upfile_name=isset($_FILES["upfile"]["name"]) ? $_FILES["upfile"]["name"] : "";
+  $upfile=isset($_FILES["upfile"]["tmp_name"]) ? $_FILES["upfile"]["tmp_name"] : "";
 
   // 時間
   $time = time();

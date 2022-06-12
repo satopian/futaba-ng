@@ -1,9 +1,20 @@
 <?php
-extract($_POST,EXTR_SKIP);
-extract($_GET,EXTR_SKIP);
-extract($_COOKIE,EXTR_SKIP);
-$upfile_name=isset($_FILES["upfile"]["name"]) ? $_FILES["upfile"]["name"] : "";
-$upfile=isset($_FILES["upfile"]["tmp_name"]) ? $_FILES["upfile"]["tmp_name"] : "";
+//INPUT_POSTから変数を取得
+
+$mode = (string)filter_input(INPUT_POST, 'mode');
+$mode = $mode ? $mode : (string)filter_input(INPUT_GET, 'mode');
+$resto = (string)filter_input(INPUT_POST, 'resto',FILTER_VALIDATE_INT);
+$pwd = (string)(filter_input(INPUT_POST, 'pwd'));
+$admin = (string)filter_input(INPUT_POST, 'admin');
+$pass = (string)(filter_input(INPUT_POST, 'pass'));
+$onlyimgdel = filter_input(INPUT_POST, 'onlyimgdel',FILTER_VALIDATE_BOOLEAN);
+
+//INPUT_GETから変数を取得
+
+$res = (string)filter_input(INPUT_GET, 'res',FILTER_VALIDATE_INT);
+
+//INPUT_COOKIEから変数を取得
+$pwdc = (string)filter_input(INPUT_COOKIE, 'pwdc');
 
 define("LOGFILE", 'img.log');		//ログファイル名
 define("TREEFILE", 'tree.log');		//ログファイル名
