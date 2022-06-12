@@ -17,7 +17,7 @@ function error($mes,$dest=''){
   ob_start();
 ?>
   <br><br><hr size="1"><br><br>
-        <center><font color=red size=5><b><?=h($mes)?><br><br><a href=<?=h(PHP_SELF2)?>>リロード</a></b></font></center>
+        <center><font color=red size=5><b><?=$mes?><br><br><a href=<?=h(PHP_SELF2)?>>リロード</a></b></font></center>
         <br><br><hr size=1>"
   </body></html>
 

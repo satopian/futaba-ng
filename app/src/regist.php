@@ -105,8 +105,6 @@ function regist($resto=0){
 	$name=preg_replace("/管理/","\"管理\"",$name);
 	$name=preg_replace("/削除/","\"削除\"",$name);
   }
-
-
   if(strlen($comment) > 1000){
     error("本文が長すぎますっ！",$dest);
   }
@@ -349,8 +347,11 @@ function regist($resto=0){
   //クッキー保存
  setcookie ("pwdc", $c_pass,time()+7*24* 3600);  /* 1週間で期限切れ */
  $c_name=$names;
- setcookie ("namec", $c_name,time()+7*24*3600);  /* 1週間で期限切れ */
+ setcookie ("namec", (string)filter_input(INPUT_POST, 'name'),time()+7*24*3600);  /* 1週間で期限切れ */
 
+
+
+ 
   if($dest&&is_file($dest)){
     rename($dest,$path.$tim.$extension);
     if(USE_THUMB){thumb($path,$tim,$extension,MAX_W,MAX_H);}
