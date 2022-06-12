@@ -811,8 +811,9 @@ function regist($resto=0){
     if(USE_THUMB){thumb($path,$tim,$extension,MAX_W,MAX_H);}
   }
   updatelog();
-?>
-  <html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="1;URL="<?=h(PHP_SELF2)?>"></head>;
+  header("Content-type: text/html; charset=UTF-8");
+  ?>
+  <html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="1;URL="<?=h(PHP_SELF2)?>"></head>
   <body><?php if($mes):?><?=h($mes)?><br><br><?php endif;?>画面を切り替えます</body></html>
 <?php
 }
