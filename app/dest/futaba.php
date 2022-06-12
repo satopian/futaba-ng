@@ -105,8 +105,8 @@ function form(&$dat,$resno,$admin=""){
   <tr><td colspan=2>
   <small>
   <LI>添付可能ファイル：GIF, JPG, PNG ブラウザによっては正常に添付できないことがあります。
-  <LI>最大投稿データ量は '.MAX_KB.' KB までです。sage機能付き。
-  <LI>画像は横 '.MAX_W.'ピクセル、縦 '.MAX_H.'ピクセルを超えると縮小表示されます。
+  <LI>最大投稿データ量は <?=h(MAX_KB)?> KB までです。sage機能付き。
+  <LI>画像は横 <?=MAX_W?>ピクセル、縦 <?=h(MAX_H)?>ピクセルを超えると縮小表示されます。
   <?=h($addinfo)?></small></td></tr></table></form></center><hr>
 <?php
 	$dat.= ob_get_clean();
