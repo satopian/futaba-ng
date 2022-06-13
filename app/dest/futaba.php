@@ -195,13 +195,14 @@ function updatelog($resno=0){
     <?php endif;?>
 
     <!-- // メイン作成 -->
-    <input type=checkbox name="del[]" value="<?=h($no)?>"><font color=#cc1105 size=+1><b><?=h($sub)?></b></font>
-    <font color=#117743><b>
-	<?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?></b>
-	</font> <?=h($now)?> No.<?=h($no)?> &nbsp;
+    <input type=checkbox name="del[]" value="<?=h($no)?>"><span class="csb"><?=h($sub)?></span>
+	Name <span class="cnm">
+	<?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?>
+	</span>
+		<span class="cnw"><?=h($now)?></span><span class="cno"> No.<?=h($no)?></span> &nbsp;
     <?php if(!$resno):?> [<a href="<?=PHP_SELF?>?res=<?=h($no)?>">返信</a>]<?php endif;?>
 	<?php $com = auto_link(h($com));?>
-	<?php $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com)?>
+	<?php $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<span style=\"color:".RE_COL.";\">\\2</span>", $com)?>
 	
 	<blockquote><?=nl2br($com,false)?></blockquote>
 
@@ -245,10 +246,11 @@ function updatelog($resno=0){
   
 		  <!-- メイン作成 -->
 		  <table border="0"><tr><td nowrap align="right" valign=top>…</td><td bgcolor=#F0E0D6 nowrap>
-		  <input type=checkbox name="<?=h($no)?>" value="delete"><font color=#cc1105 "size=+1"><b><?=h($sub)?></b></font>
-		  Name <font color="#117743"><b>
-		  <?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?></b>
-		  </font> <?=h($now)?> No.<?=h($no)?> &nbsp;
+		  <input type=checkbox name="<?=h($no)?>" value="delete"><span class="csb"><?=h($sub)?></span>
+		  Name <span class="cnm">
+		  <?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?>
+		  </span>
+		  <span class="cnw"><?=h($now)?></span><span class="cno"> No.<?=h($no)?></span>
 		  <?php if($ext && is_file($img)):?>
 		  <?php $size = filesize($img);//altにサイズ表示?>
 		  <?php if($w && $h):?>	<!-- サイズがある時 -->
@@ -1196,12 +1198,29 @@ function head(&$dat){
 <meta charset="UTF-8"/>
 <!-- meta HTTP-EQUIV="pragma" CONTENT="no-cache" -->
 <STYLE TYPE="text/css">
-<!--
 body,tr,td,th { font-size:12pt }
-a:hover { color:#DD0000; }
-span { font-size:20pt }
-small { font-size:10pt }
--->
+body{
+background-color:#FFFFEE;
+color: #800000;	
+}
+a{
+	color: #0000EE;
+}
+.title{
+	color: #800000;
+	font-size:160%;
+	text-align: center;
+}
+a:hover { color: #DD0000; }
+small { font-size: 10pt }
+.csb{color:#cc1105;font-weight:bold;margin: 0 5px;}/*sub*/
+.cnm{color:#117743;font-weight:bold;margin: 0 5px;}/*name*/
+.cnw{margin: 0 5px;}/*now*/
+.cno{margin: 0 15px 0 5px;text-decoration:underline}/*No.*/
+.cno:hover{color: red;cursor:pointer;}/*No.*/
+.rtd{max-width: 1800px;padding-right: 8px;background-color:#F0E0D6;}
+.rts{width: 18px;vertical-align:top;}
+</style>
 </STYLE>
 <title><?=h(TITLE)?></title>
 <script>
@@ -1209,13 +1228,12 @@ function l(){var b=loadCookie("pwdc"),d=loadCookie("namec"),c=loadCookie("emailc
 function loadCookie(b){var d=document.cookie;if(""==d)return"";var c=d.indexOf(b+"=");if(-1==c)return"";c+=b.length+1;b=d.indexOf(";",c);-1==b&&(b=d.length);return decodeURIComponent(d.substring(c,b))};
 </script>
 </head>
-<body bgcolor="#FFFFEE" text="#800000" link="#0000EE" vlink="#0000EE">
+<body>
 <p align="right">
 [<a href="<?=h(HOME)?>" target="_top">ホーム</a>]
 [<a href="<?=h(PHP_SELF)?>?mode=admin">管理用</a>]
 <p align="center">
-<font color="#800000" size=5>
-<b><SPAN><?=h(TITLE)?></SPAN></b></font>
+<h1 class="title"><?=h(TITLE)?></SPAN></h1>
 <hr width="90%" size="1">
 <?php
 	$dat.= ob_get_clean();

@@ -79,13 +79,14 @@ function updatelog($resno=0){
     <?php endif;?>
 
     <!-- // メイン作成 -->
-    <input type=checkbox name="del[]" value="<?=h($no)?>"><font color=#cc1105 size=+1><b><?=h($sub)?></b></font>
-    <font color=#117743><b>
-	<?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?></b>
-	</font> <?=h($now)?> No.<?=h($no)?> &nbsp;
+    <input type=checkbox name="del[]" value="<?=h($no)?>"><span class="csb"><?=h($sub)?></span>
+	Name <span class="cnm">
+	<?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?>
+	</span>
+		<span class="cnw"><?=h($now)?></span><span class="cno"> No.<?=h($no)?></span> &nbsp;
     <?php if(!$resno):?> [<a href="<?=PHP_SELF?>?res=<?=h($no)?>">返信</a>]<?php endif;?>
 	<?php $com = auto_link(h($com));?>
-	<?php $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com)?>
+	<?php $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<span style=\"color:".RE_COL.";\">\\2</span>", $com)?>
 	
 	<blockquote><?=nl2br($com,false)?></blockquote>
 
@@ -129,10 +130,11 @@ function updatelog($resno=0){
   
 		  <!-- メイン作成 -->
 		  <table border="0"><tr><td nowrap align="right" valign=top>…</td><td bgcolor=#F0E0D6 nowrap>
-		  <input type=checkbox name="<?=h($no)?>" value="delete"><font color=#cc1105 "size=+1"><b><?=h($sub)?></b></font>
-		  Name <font color="#117743"><b>
-		  <?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?></b>
-		  </font> <?=h($now)?> No.<?=h($no)?> &nbsp;
+		  <input type=checkbox name="<?=h($no)?>" value="delete"><span class="csb"><?=h($sub)?></span>
+		  Name <span class="cnm">
+		  <?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?>
+		  </span>
+		  <span class="cnw"><?=h($now)?></span><span class="cno"> No.<?=h($no)?></span>
 		  <?php if($ext && is_file($img)):?>
 		  <?php $size = filesize($img);//altにサイズ表示?>
 		  <?php if($w && $h):?>	<!-- サイズがある時 -->
