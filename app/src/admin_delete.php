@@ -35,6 +35,7 @@ function admindel($pass){
 	  $find = false;
   
 	  for($i = 0; $i < $countline; $i++){
+
 		  if(!trim($line[$i])){
 			  continue;
 		  }
@@ -70,21 +71,21 @@ function admindel($pass){
 	  }
 	  fclose($fp);
 	}
-  
-	// 削除画面を表示
-	echo "<input type=hidden name=mode value=admin>\n";
-	echo "<input type=hidden name=admin value=del>\n";
-	echo "<input type=hidden name=pass value=\"$pass\">\n";
-	echo "<center><P>削除したい記事のチェックボックスにチェックを入れ、削除ボタンを押して下さい。\n";
-	echo "<p><input type=submit value=\"削除する\">";
-	echo "<input type=reset value=\"リセット\">";
-	echo "[<input type=checkbox name=onlyimgdel value=on>画像だけ消す]";
-	echo "<P><table border=1 cellspacing=0>\n";
-	echo "<tr bgcolor=6080f6><th>削除</th><th>記事No</th><th>投稿日</th><th>題名</th>";
-	echo "<th>投稿者</th><th>コメント</th><th>ホスト名</th><th>添付<br>(Bytes)</th><th>md5</th>";
-	echo "</tr>\n";
+?>
+	<!-- 削除画面を表示 -->
+	<input type=hidden name=mode value=admin>
+	<input type=hidden name=admin value=del>
+	<input type=hidden name=pass value="<?=h($pass)?>">
+	<center><P>削除したい記事のチェックボックスにチェックを入れ、削除ボタンを押して下さい。
+	<p><input type=submit value="削除する">
+	<input type=reset value="リセット">
+	[<input type=checkbox name=onlyimgdel value="on">画像だけ消す]
+	<P><table border=1 cellspacing="0">
+	<tr bgcolor="6080f6"><th>削除</th><th>記事No</th><th>投稿日</th><th>題名</th>
+	<th>投稿者</th><th>コメント</th><th>ホスト名</th><th>添付<br>(Bytes)</th><th>md5</th>
+	</tr>
+<?php
 	$line = file(LOGFILE);
-  
 	for($j = 0; $j < count($line); $j++){
 		if(!trim($line[$j])){
 			continue;
@@ -103,9 +104,6 @@ function admindel($pass){
 		$sub = substr($sub,0,9).".";
 	  }
 	  $email=filter_var($email,FILTER_VALIDATE_EMAIL)?$email:'';
-	  if($email){ 
-		$name="<a href=\"mailto:$email\">$name</a>";
-	  }
   
 	  $com = str_replace("<br />"," ",$com);
 	  $com = htmlspecialchars($com);
@@ -117,29 +115,41 @@ function admindel($pass){
 	  // 画像があるときはリンク
 	  if($ext && is_file($path.$time.$ext)){
 		$img_flag = true;
-		$clip = "<a href=\"".IMG_DIR.$time.$ext."\" target=_blank>".$time.$ext."</a><br>";
+		$clip = true;
 		$size = filesize($path.$time.$ext);
 		$all += $size;			//合計計算
 		$chk= substr($chk,0,10);
 	  }else{
-		$clip = "";
+		$clip = false;
 		$size = 0;
 		$chk= "";
 	  }
 	  $bg = ($j % 2) ? "d6d6f6" : "f6f6f6";//背景色
-  
-	  echo "<tr bgcolor=$bg><th><input type=checkbox name=\"del[]\" value=\"$no\"></th>";
-	  echo "<th>$no</th><td><small>$now</small></td><td>$sub</td>";
-	  echo "<td><b>$name</b></td><td><small>$com</small></td>";
-	  echo "<td>$host</td><td align=center>$clip($size)</td><td>$chk</td>\n";
-	  echo "</tr>\n";
+	?>
+	  <tr bgcolor="<?=h($bg)?>"><th><input type=checkbox name="del[]" value="<?=h($no)?>"></th>
+	  <th><?=h($no)?></th><td><small><?=h($now)?></small></td><td><?=h($sub)?></td>
+	  <td><b><?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?></b>
+	  </td><td><small><?=h($com)?></small></td>
+
+	  <td><?=h($host)?></td><td align=center>
+	  <?php if($clip):?>
+		<a href="<?=h(IMG_DIR.$time.$ext)?>" target=_blank><?=h($time.$ext)?></a><br>
+	  <?php endif;?>
+	  (<?=h($size)?>)</td><td><?=h($chk)?></td>
+	  </tr>
+	<?php
 	}
+	?>
+	</table><p><input type=submit value="削除する<?=h($msg)?>">
+	<input type=reset value="リセット"></form>
   
-	echo "</table><p><input type=submit value=\"削除する$msg\">";
-	echo "<input type=reset value=\"リセット\"></form>";
-  
-	$all = (int)($all / 1024);
-	echo "【 画像データ合計 : <b>$all</b> KB 】";
-	die("</center></body></html>");
+	<?php $all = (int)($all / 1024)?>
+	【 画像データ合計 : <b><?=h($all)?></b> KB 】
+
+
+	</center></body></html>
+	<?php
+
+	exit;
   }
   ?>

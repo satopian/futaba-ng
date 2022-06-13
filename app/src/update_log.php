@@ -57,16 +57,12 @@ function updatelog($resno=0){
          $host,$pwd,$ext,$w,$h,$time,$chk) = explode(",", $line[$j]);
     // URLとメールにリンク
 	$email=filter_var($email,FILTER_VALIDATE_EMAIL)?$email:'';
-    if($email){
-      $name = "<a href=\"mailto:$email\">$name</a>";
-    }
+   
     $com = auto_link($com);
     $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com);
     // 画像ファイル名
     $img = $path.$time.$ext;
     $src = IMG_DIR.$time.$ext;
-    // <imgタグ作成
-    $imgsrc = "";
 	?>
     <?php if($ext && is_file($img)):?>
       <?php $size = filesize($img);//altにサイズ表示?>
@@ -85,7 +81,9 @@ function updatelog($resno=0){
 
     <!-- // メイン作成 -->
     <input type=checkbox name="del[]" value="<?=h($no)?>"><font color=#cc1105 size=+1><b><?=h($sub)?></b></font>
-    <font color=#117743><b><?=h($name)?></b></font> <?=h($now)?> No.<?=h($no)?> &nbsp;
+    <font color=#117743><b>
+	<?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?></b>
+	</font> <?=h($now)?> No.<?=h($no)?> &nbsp;
     <?php if(!$resno):?> [<a href="<?=PHP_SELF?>?res=<?=h($no)?>">返信</a>]<?php endif;?>
     <blockquote><?=h($com)?></blockquote>
 
@@ -121,7 +119,6 @@ function updatelog($resno=0){
 			 $host,$pwd,$ext,$w,$h,$time,$chk) = explode(",", $line[$j]);
 		// URLとメールにリンク
 		$email=filter_var($email,FILTER_VALIDATE_EMAIL)?$email:'';
-		if($email) $name = "<a href=\"mailto:$email\">$name</a>";
 		$com = auto_link($com);
 		$com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com);
   
@@ -133,7 +130,9 @@ function updatelog($resno=0){
 		  <!-- メイン作成 -->
 		  <table border="0"><tr><td nowrap align="right" valign=top>…</td><td bgcolor=#F0E0D6 nowrap>
 		  <input type=checkbox name="<?=h($no)?>" value="delete"><font color=#cc1105 "size=+1"><b><?=h($sub)?></b></font>
-		  Name <font color="#117743"><b><?=h($name)?></b></font> <?=h($now)?> No.<?=h($no)?> &nbsp;
+		  Name <font color="#117743"><b>
+		  <?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?></b>
+		  </font> <?=h($now)?> No.<?=h($no)?> &nbsp;
 		  <?php if($ext && is_file($img)):?>
 		  <?php $size = filesize($img);//altにサイズ表示?>
 		  <?php if($w && $h):?>	<!-- サイズがある時 -->
