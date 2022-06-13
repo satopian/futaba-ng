@@ -89,19 +89,19 @@ function form(&$dat,$resno,$admin=""){
 <?php endif;?>
 
   <table cellpadding=1 cellspacing=1>
-  <tr><td bgcolor=#eeaa88><b>おなまえ</b></td><td><input type=text name="name" size="28" autocomplete="username"></td></tr>
-  <tr><td bgcolor=#eeaa88><b>E-mail</b></td><td><input type=text name="email" size="28"></td></tr>
-  <tr><td bgcolor=#eeaa88><b>題　　名</b></td><td><input type=text name="sub" size="35">
+  <tr><td class="ftdc"><b>おなまえ</b></td><td><input type=text name="name" size="28" autocomplete="username"></td></tr>
+  <tr><td class="ftdc"><b>E-mail</b></td><td><input type=text name="email" size="28"></td></tr>
+  <tr><td class="ftdc"><b>題　　名</b></td><td><input type=text name="sub" size="35">
   <input type=submit value="送信する"></td></tr>
-  <tr><td bgcolor=#eeaa88><b>コメント</b></td><td><textarea name=com cols="48" rows="4" wrap=soft></textarea></td></tr>
+  <tr><td class="ftdc"><b>コメント</b></td><td><textarea name=com cols="48" rows="4" wrap=soft></textarea></td></tr>
 
   <?php if(RESIMG || !$resno):?>
-    <tr><td bgcolor=#eeaa88><b>添付File</b></td>
+    <tr><td class="ftdc"><b>添付File</b></td>
     <td><input type=file name=upfile size="35">
     [<label><input type=checkbox name=textonly value=on>画像なし</label>]</td></tr>
   <?php endif;?>
 
-  <tr><td bgcolor=#eeaa88><b>削除キー</b></td><td><input type=password name=pwd size=8 value=""><small>(記事の削除用)</small></td></tr>
+  <tr><td class="ftdc"><b>削除キー</b></td><td><input type=password name=pwd size=8 value=""><small>(記事の削除用)</small></td></tr>
   <tr><td colspan=2>
   <small>
   <LI>添付可能ファイル：GIF, JPG, PNG ブラウザによっては正常に添付できないことがあります。
@@ -245,12 +245,12 @@ function updatelog($resno=0){
 		?>
   
 		  <!-- メイン作成 -->
-		  <table border="0"><tr><td nowrap align="right" valign=top>…</td><td bgcolor=#F0E0D6 nowrap>
+		  <table border="0"><tr><td class="rts">…</td><td <td class="rtd">
 		  <input type=checkbox name="<?=h($no)?>" value="delete"><span class="csb"><?=h($sub)?></span>
 		  Name <span class="cnm">
 		  <?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?>
 		  </span>
-		  <span class="cnw"><?=h($now)?></span><span class="cno"> No.<?=h($no)?></span>
+		  <span class="cnw"><?=h($now)?></span><span class="cno"> No.<?=h($no)?></span>	
 		  <?php if($ext && is_file($img)):?>
 		  <?php $size = filesize($img);//altにサイズ表示?>
 		  <?php if($w && $h):?>	<!-- サイズがある時 -->
@@ -1197,7 +1197,7 @@ function head(&$dat){
 <html><head>
 <meta charset="UTF-8"/>
 <!-- meta HTTP-EQUIV="pragma" CONTENT="no-cache" -->
-<STYLE TYPE="text/css">
+<style>
 body,tr,td,th { font-size:12pt }
 body{
 background-color:#FFFFEE;
@@ -1220,6 +1220,7 @@ small { font-size: 10pt }
 .cno:hover{color: red;cursor:pointer;}/*No.*/
 .rtd{max-width: 1800px;padding-right: 8px;background-color:#F0E0D6;}
 .rts{width: 18px;vertical-align:top;}
+.ftdc{background-color:#ea8;width:4.5em;white-space:nowrap;}
 .errmsg{
 	font-size:150%;color:red;
 	font-weight: 600;
@@ -1227,7 +1228,6 @@ small { font-size: 10pt }
 	display: inherit;
 }
 </style>
-</STYLE>
 <title><?=h(TITLE)?></title>
 <script>
 function l(){var b=loadCookie("pwdc"),d=loadCookie("namec"),c=loadCookie("emailc"),h=loadCookie("urlc"),a;for(a=0;a<document.forms.length;a++)document.forms[a].pwd&&(document.forms[a].pwd.value=b),document.forms[a].name&&(document.forms[a].name.value=d),document.forms[a].email&&(document.forms[a].email.value=c),document.forms[a].url&&(document.forms[a].url.value=h)}
@@ -1239,7 +1239,7 @@ function loadCookie(b){var d=document.cookie;if(""==d)return"";var c=d.indexOf(b
 [<a href="<?=h(HOME)?>" target="_top">ホーム</a>]
 [<a href="<?=h(PHP_SELF)?>?mode=admin">管理用</a>]
 <p align="center">
-<h1 class="title"><?=h(TITLE)?></SPAN></h1>
+<h1 class="title"><?=h(TITLE)?></h1>
 <hr width="90%" size="1">
 <?php
 	$dat.= ob_get_clean();

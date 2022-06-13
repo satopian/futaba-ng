@@ -129,12 +129,12 @@ function updatelog($resno=0){
 		?>
   
 		  <!-- メイン作成 -->
-		  <table border="0"><tr><td nowrap align="right" valign=top>…</td><td bgcolor=#F0E0D6 nowrap>
+		  <table border="0"><tr><td class="rts">…</td><td <td class="rtd">
 		  <input type=checkbox name="<?=h($no)?>" value="delete"><span class="csb"><?=h($sub)?></span>
 		  Name <span class="cnm">
 		  <?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?>
 		  </span>
-		  <span class="cnw"><?=h($now)?></span><span class="cno"> No.<?=h($no)?></span>
+		  <span class="cnw"><?=h($now)?></span><span class="cno"> No.<?=h($no)?></span>	
 		  <?php if($ext && is_file($img)):?>
 		  <?php $size = filesize($img);//altにサイズ表示?>
 		  <?php if($w && $h):?>	<!-- サイズがある時 -->

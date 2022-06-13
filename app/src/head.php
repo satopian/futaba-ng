@@ -11,7 +11,7 @@ function head(&$dat){
 <html><head>
 <meta charset="UTF-8"/>
 <!-- meta HTTP-EQUIV="pragma" CONTENT="no-cache" -->
-<STYLE TYPE="text/css">
+<style>
 body,tr,td,th { font-size:12pt }
 body{
 background-color:#FFFFEE;
@@ -34,6 +34,7 @@ small { font-size: 10pt }
 .cno:hover{color: red;cursor:pointer;}/*No.*/
 .rtd{max-width: 1800px;padding-right: 8px;background-color:#F0E0D6;}
 .rts{width: 18px;vertical-align:top;}
+.ftdc{background-color:#ea8;width:4.5em;white-space:nowrap;}
 .errmsg{
 	font-size:150%;color:red;
 	font-weight: 600;
@@ -41,7 +42,6 @@ small { font-size: 10pt }
 	display: inherit;
 }
 </style>
-</STYLE>
 <title><?=h(TITLE)?></title>
 <script>
 function l(){var b=loadCookie("pwdc"),d=loadCookie("namec"),c=loadCookie("emailc"),h=loadCookie("urlc"),a;for(a=0;a<document.forms.length;a++)document.forms[a].pwd&&(document.forms[a].pwd.value=b),document.forms[a].name&&(document.forms[a].name.value=d),document.forms[a].email&&(document.forms[a].email.value=c),document.forms[a].url&&(document.forms[a].url.value=h)}
@@ -53,7 +53,7 @@ function loadCookie(b){var d=document.cookie;if(""==d)return"";var c=d.indexOf(b
 [<a href="<?=h(HOME)?>" target="_top">ホーム</a>]
 [<a href="<?=h(PHP_SELF)?>?mode=admin">管理用</a>]
 <p align="center">
-<h1 class="title"><?=h(TITLE)?></SPAN></h1>
+<h1 class="title"><?=h(TITLE)?></h1>
 <hr width="90%" size="1">
 <?php
 	$dat.= ob_get_clean();

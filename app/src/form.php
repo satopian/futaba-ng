@@ -33,19 +33,19 @@ function form(&$dat,$resno,$admin=""){
 <?php endif;?>
 
   <table cellpadding=1 cellspacing=1>
-  <tr><td bgcolor=#eeaa88><b>おなまえ</b></td><td><input type=text name="name" size="28" autocomplete="username"></td></tr>
-  <tr><td bgcolor=#eeaa88><b>E-mail</b></td><td><input type=text name="email" size="28"></td></tr>
-  <tr><td bgcolor=#eeaa88><b>題　　名</b></td><td><input type=text name="sub" size="35">
+  <tr><td class="ftdc"><b>おなまえ</b></td><td><input type=text name="name" size="28" autocomplete="username"></td></tr>
+  <tr><td class="ftdc"><b>E-mail</b></td><td><input type=text name="email" size="28"></td></tr>
+  <tr><td class="ftdc"><b>題　　名</b></td><td><input type=text name="sub" size="35">
   <input type=submit value="送信する"></td></tr>
-  <tr><td bgcolor=#eeaa88><b>コメント</b></td><td><textarea name=com cols="48" rows="4" wrap=soft></textarea></td></tr>
+  <tr><td class="ftdc"><b>コメント</b></td><td><textarea name=com cols="48" rows="4" wrap=soft></textarea></td></tr>
 
   <?php if(RESIMG || !$resno):?>
-    <tr><td bgcolor=#eeaa88><b>添付File</b></td>
+    <tr><td class="ftdc"><b>添付File</b></td>
     <td><input type=file name=upfile size="35">
     [<label><input type=checkbox name=textonly value=on>画像なし</label>]</td></tr>
   <?php endif;?>
 
-  <tr><td bgcolor=#eeaa88><b>削除キー</b></td><td><input type=password name=pwd size=8 value=""><small>(記事の削除用)</small></td></tr>
+  <tr><td class="ftdc"><b>削除キー</b></td><td><input type=password name=pwd size=8 value=""><small>(記事の削除用)</small></td></tr>
   <tr><td colspan=2>
   <small>
   <LI>添付可能ファイル：GIF, JPG, PNG ブラウザによっては正常に添付できないことがあります。
