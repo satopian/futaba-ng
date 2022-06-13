@@ -424,8 +424,8 @@ function error($mes,$dest=''){
   ob_start();
 ?>
   <br><br><hr size="1"><br><br>
-        <center><font color=red size=5><b><?=$mes?><br><br><a href=<?=h(PHP_SELF2)?>>リロード</a></b></font></center>
-        <br><br><hr size=1>"
+        <span class="errmsg"><?=$mes?><br><br><a href=<?=h(PHP_SELF2)?>>リロード</a></span>
+        <br><br><hr size=1>
   </body></html>
 
 <?php
@@ -1012,7 +1012,7 @@ function valid($pass){
   echo "[<a href=\"".PHP_SELF2."\">掲示板に戻る</a>]\n";
   echo "[<a href=\"".PHP_SELF."\">ログを更新する</a>]\n";
   echo "<table width='100%'><tr><th bgcolor=#E08000>\n";
-  echo "<font color=#FFFFFF>管理モード</font>\n";
+  echo "<span style=\"color: #fff;\">管理モード</span>\n";
   echo "</th></tr></table>\n";
   echo "<p><form action=\"".PHP_SELF."\" method=POST>\n";
 
@@ -1220,6 +1220,12 @@ small { font-size: 10pt }
 .cno:hover{color: red;cursor:pointer;}/*No.*/
 .rtd{max-width: 1800px;padding-right: 8px;background-color:#F0E0D6;}
 .rts{width: 18px;vertical-align:top;}
+.errmsg{
+	font-size:150%;color:red;
+	font-weight: 600;
+	text-align: center;
+	display: inherit;
+}
 </style>
 </STYLE>
 <title><?=h(TITLE)?></title>

@@ -34,6 +34,12 @@ small { font-size: 10pt }
 .cno:hover{color: red;cursor:pointer;}/*No.*/
 .rtd{max-width: 1800px;padding-right: 8px;background-color:#F0E0D6;}
 .rts{width: 18px;vertical-align:top;}
+.errmsg{
+	font-size:150%;color:red;
+	font-weight: 600;
+	text-align: center;
+	display: inherit;
+}
 </style>
 </STYLE>
 <title><?=h(TITLE)?></title>

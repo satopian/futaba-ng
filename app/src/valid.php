@@ -16,7 +16,7 @@ function valid($pass){
   echo "[<a href=\"".PHP_SELF2."\">掲示板に戻る</a>]\n";
   echo "[<a href=\"".PHP_SELF."\">ログを更新する</a>]\n";
   echo "<table width='100%'><tr><th bgcolor=#E08000>\n";
-  echo "<font color=#FFFFFF>管理モード</font>\n";
+  echo "<span style=\"color: #fff;\">管理モード</span>\n";
   echo "</th></tr></table>\n";
   echo "<p><form action=\"".PHP_SELF."\" method=POST>\n";
 
