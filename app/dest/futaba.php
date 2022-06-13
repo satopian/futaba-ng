@@ -171,11 +171,10 @@ function updatelog($resno=0){
     
     list($no,$now,$name,$email,$sub,$com,$url,
          $host,$pwd,$ext,$w,$h,$time,$chk) = explode(",", $line[$j]);
-    // URLとメールにリンク
+	$com = preg_replace("#<br( *)/?>#i","\n",$com); // <br>または<br />を改行へ戻す
+	// URLとメールにリンク
 	$email=filter_var($email,FILTER_VALIDATE_EMAIL)?$email:'';
    
-    $com = auto_link($com);
-    $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com);
     // 画像ファイル名
     $img = $path.$time.$ext;
     $src = IMG_DIR.$time.$ext;
@@ -201,7 +200,10 @@ function updatelog($resno=0){
 	<?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?></b>
 	</font> <?=h($now)?> No.<?=h($no)?> &nbsp;
     <?php if(!$resno):?> [<a href="<?=PHP_SELF?>?res=<?=h($no)?>">返信</a>]<?php endif;?>
-    <blockquote><?=h($com)?></blockquote>
+	<?php $com = auto_link(h($com));?>
+	<?php $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com)?>;
+	
+	<blockquote><?=nl2br($com,false)?></blockquote>
 
      <!-- // そろそろ消える。 -->
      <?php if($lineindex[$no] >= LOG_MAX*0.95):?>
@@ -234,10 +236,8 @@ function updatelog($resno=0){
 		list($no,$now,$name,$email,$sub,$com,$url,
 			 $host,$pwd,$ext,$w,$h,$time,$chk) = explode(",", $line[$j]);
 		// URLとメールにリンク
+		$com = preg_replace("#<br( *)/?>#i","\n",$com); // <br>または<br />を改行へ戻す
 		$email=filter_var($email,FILTER_VALIDATE_EMAIL)?$email:'';
-		$com = auto_link($com);
-		$com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com);
-  
 		// 画像ファイル名
 		$img = $path.$time.$ext;
 		$src = IMG_DIR.$time.$ext;
@@ -262,8 +262,10 @@ function updatelog($resno=0){
 		<?php endif;?>
 		<?php endif;?>
 		<?php endif;?>
+		<?php $com = auto_link(h($com));?>
+		<?php $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com)?>;
 		 
-		 <blockquote><?=h($com)?></blockquote>
+		 <blockquote><?=nl2br($com,false)?></blockquote>
 		  </td></tr></table>
 		<?php  
 		}
