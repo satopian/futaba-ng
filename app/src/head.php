@@ -8,7 +8,9 @@
 function head(&$dat){
 	ob_start();
 ?>
-<html><head>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
 <meta charset="UTF-8"/>
 <!-- meta HTTP-EQUIV="pragma" CONTENT="no-cache" -->
 <style>
@@ -30,11 +32,10 @@ small { font-size: 10pt }
 .csb{color:#cc1105;font-weight:bold;margin: 0 5px;}/*sub*/
 .cnm{color:#117743;font-weight:bold;margin: 0 5px;}/*name*/
 .cnw{margin: 0 5px;}/*now*/
-.cno{margin: 0 15px 0 5px;text-decoration:underline}/*No.*/
-.cno:hover{color: red;cursor:pointer;}/*No.*/
 .rtd{max-width: 1800px;padding-right: 8px;background-color:#F0E0D6;}
 .rts{width: 18px;vertical-align:top;}
 .ftdc{background-color:#ea8;width:4.5em;white-space:nowrap;}
+.chui{font-size:small;}
 .errmsg{
 	font-size:150%;color:red;
 	font-weight: 600;

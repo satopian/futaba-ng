@@ -83,7 +83,7 @@ function updatelog($resno=0){
 	Name <span class="cnm">
 	<?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?>
 	</span>
-		<span class="cnw"><?=h($now)?></span><span class="cno"> No.<?=h($no)?></span> &nbsp;
+		<span class="cnw"><?=h($now)?></span><span class="cno"> No.<?=h($no)?></span>
     <?php if(!$resno):?> [<a href="<?=PHP_SELF?>?res=<?=h($no)?>">返信</a>]<?php endif;?>
 	<?php $com = auto_link(h($com));?>
 	<?php $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<span style=\"color:".RE_COL.";\">\\2</span>", $com)?>
@@ -149,7 +149,7 @@ function updatelog($resno=0){
 		<?php endif;?>
 		<?php endif;?>
 		<?php $com = auto_link(h($com));?>
-		<?php $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com)?>;
+		<?php $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com)?>
 		 
 		 <blockquote><?=nl2br($com,false)?></blockquote>
 		  </td></tr></table>

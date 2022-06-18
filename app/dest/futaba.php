@@ -102,12 +102,12 @@ function form(&$dat,$resno,$admin=""){
   <?php endif;?>
 
   <tr><td class="ftdc"><b>削除キー</b></td><td><input type=password name=pwd size=8 value=""><small>(記事の削除用)</small></td></tr>
-  <tr><td colspan=2>
-  <small>
-  <LI>添付可能ファイル：GIF, JPG, PNG ブラウザによっては正常に添付できないことがあります。
-  <LI>最大投稿データ量は <?=h(MAX_KB)?> KB までです。sage機能付き。
-  <LI>画像は横 <?=MAX_W?>ピクセル、縦 <?=h(MAX_H)?>ピクセルを超えると縮小表示されます。
-  <?=h($addinfo)?></small></td></tr></table></form></center><hr>
+  <tr><td colspan=2 class="chui">
+  <li>添付可能ファイル：GIF, JPG, PNG ブラウザによっては正常に添付できないことがあります。</li>
+  <li>最大投稿データ量は <?=h(MAX_KB)?> KB までです。sage機能付き。</li>
+  <li>画像は横 <?=MAX_W?>ピクセル、縦 <?=h(MAX_H)?>ピクセルを超えると縮小表示されます。</li>
+  <?=h($addinfo)?>
+</td></tr></table></form></center><hr>
 <?php
 	$dat.= ob_get_clean();
 
@@ -199,7 +199,7 @@ function updatelog($resno=0){
 	Name <span class="cnm">
 	<?php if($email):?><a href="mailto:<?=h($email)?>"><?=h($name)?></a><?php else:?><?=h($name)?><?php endif;?>
 	</span>
-		<span class="cnw"><?=h($now)?></span><span class="cno"> No.<?=h($no)?></span> &nbsp;
+		<span class="cnw"><?=h($now)?></span><span class="cno"> No.<?=h($no)?></span>
     <?php if(!$resno):?> [<a href="<?=PHP_SELF?>?res=<?=h($no)?>">返信</a>]<?php endif;?>
 	<?php $com = auto_link(h($com));?>
 	<?php $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<span style=\"color:".RE_COL.";\">\\2</span>", $com)?>
@@ -265,7 +265,7 @@ function updatelog($resno=0){
 		<?php endif;?>
 		<?php endif;?>
 		<?php $com = auto_link(h($com));?>
-		<?php $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com)?>;
+		<?php $com = preg_replace("/(^|>)(&gt;[^<]*)/i", "\\1<font color=".RE_COL.">\\2</font>", $com)?>
 		 
 		 <blockquote><?=nl2br($com,false)?></blockquote>
 		  </td></tr></table>
@@ -1194,7 +1194,9 @@ function admindel($pass){
 function head(&$dat){
 	ob_start();
 ?>
-<html><head>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
 <meta charset="UTF-8"/>
 <!-- meta HTTP-EQUIV="pragma" CONTENT="no-cache" -->
 <style>
@@ -1216,11 +1218,10 @@ small { font-size: 10pt }
 .csb{color:#cc1105;font-weight:bold;margin: 0 5px;}/*sub*/
 .cnm{color:#117743;font-weight:bold;margin: 0 5px;}/*name*/
 .cnw{margin: 0 5px;}/*now*/
-.cno{margin: 0 15px 0 5px;text-decoration:underline}/*No.*/
-.cno:hover{color: red;cursor:pointer;}/*No.*/
 .rtd{max-width: 1800px;padding-right: 8px;background-color:#F0E0D6;}
 .rts{width: 18px;vertical-align:top;}
 .ftdc{background-color:#ea8;width:4.5em;white-space:nowrap;}
+.chui{font-size:small;}
 .errmsg{
 	font-size:150%;color:red;
 	font-weight: 600;
