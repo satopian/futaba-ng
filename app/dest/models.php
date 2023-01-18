@@ -278,7 +278,8 @@ class PrettifyText {
    */
   private static function replaceSpecialString($target_string) {
     // strip html tag
-    $trimed_tag_message = htmlspecialchars($target_string);
+    $trimed_tag_message = htmlspecialchars((string)$target_string,ENT_QUOTES,'utf-8');
+
     // strip special chars
     $replace_ampersand_message = (
       str_replace("&amp;", "&", $trimed_tag_message)

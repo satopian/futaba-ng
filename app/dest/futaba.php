@@ -256,8 +256,7 @@ function updatelog($resno=0){
 		  <?php if($w && $h):?>	<!-- サイズがある時 -->
 		  <br> &nbsp; &nbsp; <a href="<?=h($src)?>" target=_blank><?=h($time.$ext)?></a>-(<?=h($size)?> B)
 		  <?php if(is_file(THUMB_DIR.$time.'s.jpg')):?>
-			  <small>サムネイル表示</small><br><a href=<?=h($src)?>" target=_blank><img src="<?=h(THUMB_DIR.$time.'s.jpg')?>
-		  " border="0" align=left width="<?=h($w)?>" height="<?=h($h)?>" hspace="20" alt="<?=h($size)?> B"></a>
+			  <small>サムネイル表示</small><br><a href=<?=h($src)?>" target=_blank><img src="<?=h(THUMB_DIR.$time.'s.jpg')?>" border="0" align="left" width="<?=h($w)?>" height="<?=h($h)?>" hspace="20" alt="<?=h($size)?> B"></a>
 			<?php else:?>
 			  <a href="<?=h($src)?>" target=_blank><img src="<?=h($src)?>
 		  " border="0" align="left" width="<?=h($w)?>" height=<?=h($h)?> hspace="20" alt="<?=h($size)?> B"></a>
