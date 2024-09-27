@@ -9,4 +9,4 @@ thumb/*
 app/dest/src/*
 app/dest/thumb/*
 node_modules
-/app/package-lock.json
+

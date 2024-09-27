@@ -33,9 +33,9 @@ This script aims running with PHP 5.4.15 or later...
 ```
 > cd app
 > npm i
-> grunt concat:models
-> grunt concat:futaba
-> grunt shell:phpRunning
+> npx grunt concat:models
+> npx grunt concat:futaba
+> npx grunt shell:phpRunning
 ```
 
 # ToDo
@@ -50,8 +50,6 @@ Use by nkf (Nihongo Kanji Filter).
 ```
 > nkf -Lu old.log > new.log
 ```
-![みさわ](http://jigokuno.img.jugem.jp/20090928_1487687.gif)
-
 # Lisence
 
 This script for License is Public-domain.

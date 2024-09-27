@@ -1,16 +1,16 @@
 {
-  "name": "futaba-ng",
-  "repository": {
-    "private": true
-  },
-  "engines": {
-    "node": ">= 10.0.7"
-  },
-  "dependencies": {
-    "grunt": "",
-    "grunt-contrib-concat": ">= 0.3.0"
-  },
-  "devDependencies": {
-    "grunt-shell": "~0.2.2"
-  }
+    "name": "futaba-ng",
+    "repository": {
+        "private": true
+    },
+    "engines": {
+        "node": ">= 10.0.7"
+    },
+    "dependencies": {
+        "grunt": "^1.6.1",
+        "grunt-contrib-concat": "^2.1.0"
+    },
+    "devDependencies": {
+        "grunt-shell": "^3.0.1"
+    }
 }
