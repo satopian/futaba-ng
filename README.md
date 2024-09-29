@@ -31,11 +31,11 @@ This script aims running with PHP 5.4.15 or later...
 # How to running
 - PHP 5.4.15 or later
 ```
-> cd app
-> npm i
-> npx grunt concat:models
-> npx grunt concat:futaba
-> npx grunt shell:phpRunning
+$ cd app
+$ npm i
+$ npx grunt concat:models
+$ npx grunt concat:futaba
+$ npx grunt shell:phpRunning
 ```
 
 # ToDo
